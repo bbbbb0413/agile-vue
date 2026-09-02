@@ -10,7 +10,7 @@
             <span class="badge" :class="badgeClass">{{ displayCategory }}</span>
             <h1 class="detail-title">{{ course.title }}</h1>
             <p class="detail-desc">
-              {{ course.description || '실무 전문가가 직접 설계한 커리큘럼으로 체계적으로 학습하세요.' }}
+              {{ course.description || '선생님과 함께 천천히, 즐겁게 배우는 수업입니다.' }}
             </p>
 
             <div class="detail-meta">
@@ -22,7 +22,7 @@
           <!-- 우측 결제/수강 카드 -->
           <div class="enroll-card fade-in">
             <div class="enroll-thumb" :class="thumbBg">
-              <img v-if="thumbSrc" :src="thumbSrc" :alt="course.title" />
+              <span class="thumb-emoji" aria-hidden="true">{{ thumbEmoji }}</span>
             </div>
 
             <div class="enroll-body">
@@ -45,9 +45,9 @@
               </p>
 
               <ul class="enroll-info-list">
-                <li>✅ 즉시 수강 가능</li>
-                <li>✅ 평생 소장</li>
-                <li>✅ 수료증 발급</li>
+                <li>✅ 신청 즉시 확정</li>
+                <li>✅ 정해진 요일에 반복 수업</li>
+                <li>✅ 가족에게 신청 내역 공유</li>
               </ul>
             </div>
           </div>
@@ -72,6 +72,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import { useCourseStore } from '@/store/course.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { useAuthStore } from '@/store/auth.js'
+import { getCategoryStyle } from '@/constants/categories.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -86,17 +87,10 @@ const course = computed(() => courseStore.selectedCourse)
 const loading = computed(() => courseStore.loading)
 const isInstructor = computed(() => auth.user?.role === 'INSTRUCTOR')
 
-const categoryConfig = {
-  '백엔드': { badge: 'badge-teal', bg: 'thumb-teal', thumb: 'spring_boot' },
-  '프론트엔드': { badge: 'badge-teal', bg: 'thumb-teal', thumb: 'vue_js' },
-  'DevOps': { badge: 'badge-blue', bg: 'thumb-blue', thumb: 'kubernetes' },
-  '데이터': { badge: 'badge-purple', bg: 'thumb-purple', thumb: 'python' },
-  'AI': { badge: 'badge-pink', bg: 'thumb-pink', thumb: 'generative_ai' },
-}
-
-const config = computed(() => categoryConfig[course.value?.category] || {})
-const badgeClass = computed(() => config.value.badge || 'badge-gray')
-const thumbBg = computed(() => config.value.bg || 'thumb-gray')
+const config = computed(() => getCategoryStyle(course.value?.category))
+const badgeClass = computed(() => config.value.badge)
+const thumbBg = computed(() => config.value.bg)
+const thumbEmoji = computed(() => config.value.emoji)
 
 const displayCategory = computed(() => course.value?.category || '-')
 
@@ -123,17 +117,6 @@ const displayEnrollmentCount = computed(() => {
 const displayPrice = computed(() => {
   const value = Number(course.value?.price ?? 0)
   return Number.isNaN(value) ? '0' : value.toLocaleString()
-})
-
-const thumbSrc = computed(() => {
-  const key = course.value?.thumbnail || config.value.thumb
-  if (!key) return null
-
-  try {
-    return new URL(`../assets/images/courses/${key}.png`, import.meta.url).href
-  } catch {
-    return null
-  }
 })
 
 const buttonLabel = computed(() => {
@@ -317,17 +300,17 @@ watch(
   justify-content: center;
 }
 
-.enroll-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 20px;
+.thumb-emoji {
+  font-size: 64px;
+  line-height: 1;
 }
 
 .thumb-teal { background: #E1F5EE; }
 .thumb-blue { background: #E6F1FB; }
+.thumb-amber { background: #FAEEDA; }
 .thumb-purple { background: #EEEDFE; }
 .thumb-pink { background: #FBEAF0; }
+.thumb-green { background: #E4F4E2; }
 .thumb-gray { background: #F1EFE8; }
 
 .enroll-body {
