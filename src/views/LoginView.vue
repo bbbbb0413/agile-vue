@@ -4,8 +4,8 @@
       <!-- 좌측 브랜딩 -->
       <div class="login-left">
         <div class="brand">
-          <img src="@/assets/images/logo/main_logo.png" alt="LearnNexus" class="brand-logo" />
-          <span class="brand-name">LearnNexus</span>
+          <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="brand-logo" />
+          <span class="brand-name">다시봄</span>
         </div>
         <div class="brand-content">
           <h2>다시 만나서<br>반갑습니다</h2>
@@ -25,17 +25,19 @@
 
           <!-- 로그인 영역 -->
           <div v-if="!showRegister" class="section">
-            <h3 class="section-title">로그인</h3>
-            <p class="section-desc">LearnNexus 계정으로 로그인합니다.</p>
-            <button class="btn btn-primary btn-full" @click="handleOAuth">로그인</button>
+            <div class="auth-icon">👋</div>
+            <h3 class="section-title">반가워요!</h3>
+            <p class="section-desc">다시봄 계정으로 로그인해주세요.</p>
+            <button class="btn btn-primary btn-full" @click="handleOAuth">🔑 로그인하기</button>
             <div class="switch-link">
               계정이 없으신가요?
-              <button class="text-btn" @click="showRegister = true">회원가입</button>
+              <button class="text-btn" @click="showRegister = true">회원가입 하기 →</button>
             </div>
           </div>
 
           <!-- 회원가입 영역 -->
           <div v-else class="section">
+            <div class="auth-icon">✍️</div>
             <h3 class="section-title">회원가입</h3>
             <form @submit.prevent="handleRegister" class="form">
               <div class="form-group">
@@ -129,7 +131,7 @@ async function handleRegister() {
   min-height: 100vh;
 }
 .login-left {
-  background: linear-gradient(160deg, #1a4f8a 0%, #185FA5 50%, #1e7bc4 100%);
+  background: linear-gradient(180deg, #E8A33D 0%, #D98A15 40%, #A8650B 75%, #6B3D06 100%);
   padding: 48px;
   display: flex;
   flex-direction: column;
@@ -154,7 +156,15 @@ async function handleRegister() {
   padding: 48px;
   background: var(--color-bg-primary);
 }
-.login-box { width: 100%; max-width: 400px; }
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg-primary);
+  border: 1.5px solid var(--color-primary-light);
+  border-radius: 28px;
+  padding: 40px 36px;
+  box-shadow: 0 20px 50px -12px rgba(217, 138, 21, 0.22);
+}
 .back-link {
   display: inline-block;
   font-size: 13px;
@@ -165,8 +175,20 @@ async function handleRegister() {
 .back-link:hover { color: var(--color-primary); }
 
 .section { display: flex; flex-direction: column; gap: 16px; }
-.section-title { font-size: 22px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 4px; }
-.section-desc { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.auth-icon {
+  width: 60px;
+  height: 60px;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 2px;
+}
+.section-title { font-size: 26px; font-weight: 800; color: var(--color-text-primary); margin-bottom: 2px; text-align: center; }
+.section-desc { font-size: 16px; color: var(--color-text-secondary); margin-bottom: 8px; text-align: center; line-height: 1.5; }
 
 .form { display: flex; flex-direction: column; gap: 14px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -183,24 +205,40 @@ async function handleRegister() {
   outline: none;
 }
 .form-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-light); }
-.btn-full { width: 100%; padding: 12px; font-size: 15px; justify-content: center; margin-top: 4px; }
+.btn-full {
+  width: 100%;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  justify-content: center;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary-dark));
+  box-shadow: 0 10px 24px -8px rgba(217, 138, 21, 0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-full:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(217, 138, 21, 0.6); }
 
 .switch-link {
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text-secondary);
-  margin-top: 4px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: var(--color-primary-light);
+  border-radius: 999px;
 }
 .text-btn {
   background: none;
   border: none;
-  color: var(--color-primary);
-  font-size: 13px;
-  font-weight: 500;
+  color: var(--color-primary-dark);
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   padding: 0 2px;
-  text-decoration: underline;
+  text-decoration: none;
 }
+.text-btn:hover { text-decoration: underline; }
 .error-msg {
   padding: 10px 14px;
   background: #fef2f2;

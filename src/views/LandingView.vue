@@ -211,8 +211,8 @@ const features = [
   justify-content: center;
 }
 .visual-card {
-  width: 220px;
-  height: 220px;
+  width: 400px;
+  height: 400px;
   background: #fff;
   border-radius: 28px;
   display: flex;
