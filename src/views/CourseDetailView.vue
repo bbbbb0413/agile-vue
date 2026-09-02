@@ -221,8 +221,13 @@ async function handlePrimaryAction() {
   enrolling.value = true
 
   try {
-    await enrollmentApi.enroll(course.value.id)
+    const res = await enrollmentApi.enroll(course.value.id)
     enrollmentStatus.value = 'PENDING'
+
+    const enrollmentId = res.data?.data?.id
+    if (enrollmentId) {
+      router.push(`/health-check/${enrollmentId}`)
+    }
   } catch (e) {
     console.error('[CourseDetail] enroll failed:', e)
     enrollError.value = e.response?.data?.message || '결제/수강 신청에 실패했습니다.'
