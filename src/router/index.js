@@ -37,6 +37,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/health-check/:enrollmentId',
+    name: 'HealthCheck',
+    component: () => import('@/views/HealthCheckView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/enrollments',
     name: 'Enrollment',
     component: () => import('@/views/EnrollmentView.vue'),
