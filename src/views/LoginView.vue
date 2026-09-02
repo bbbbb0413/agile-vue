@@ -3,23 +3,29 @@
     <div class="login-layout">
       <!-- 좌측 브랜딩 -->
       <div class="login-left">
-        <div class="brand">
-          <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="brand-logo" />
-          <span class="brand-name">다시봄</span>
-        </div>
-        <div class="brand-content">
-          <h2>다시 만나서<br>반갑습니다</h2>
-          <p>로그인하고 나만의 학습 여정을 이어가세요.</p>
-          <ul class="feature-list">
-            <li v-for="f in features" :key="f">
-              <span class="dot"></span>{{ f }}
-            </li>
-          </ul>
+        <div class="brand-blob blob-a"></div>
+        <div class="brand-blob blob-b"></div>
+        <div class="left-inner">
+          <div class="brand">
+            <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="brand-logo" />
+          </div>
+          <div class="brand-content">
+            <span class="brand-tagline">🌼 배움으로 만나는 새로운 봄</span>
+            <h2>다시 만나서<br>반갑습니다</h2>
+            <p>로그인하고 나만의 학습 여정을 이어가세요.</p>
+            <ul class="feature-list">
+              <li v-for="f in features" :key="f">
+                <span class="dot">✓</span>{{ f }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
       <!-- 우측 -->
       <div class="login-right">
+        <div class="right-blob blob-c"></div>
+        <div class="right-blob blob-d"></div>
         <div class="login-box fade-in-up">
           <router-link to="/" class="back-link">← 홈으로</router-link>
 
@@ -131,38 +137,99 @@ async function handleRegister() {
   min-height: 100vh;
 }
 .login-left {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(180deg, #E8A33D 0%, #D98A15 40%, #A8650B 75%, #6B3D06 100%);
-  padding: 48px;
+  padding: 56px 48px;
+  display: flex;
+  align-items: center;
+}
+.brand-blob { position: absolute; border-radius: 50%; filter: blur(55px); opacity: 0.35; pointer-events: none; }
+.blob-a { width: 260px; height: 260px; background: #fff6df; top: -80px; right: -60px; }
+.blob-b { width: 220px; height: 220px; background: #fddca0; bottom: -70px; left: -50px; }
+.left-inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 32px;
+  max-width: 440px;
+  margin: 0 auto;
+  width: 100%;
 }
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; }
-.brand-name { font-size: 18px; font-weight: 700; color: #fff; }
+.brand { display: flex; }
+.brand-logo {
+  width: 120px;
+  height: 120px;
+  padding: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 55%, rgba(255,255,255,0.5) 75%, rgba(255,255,255,0) 100%);
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,0.18));
+}
+.brand-tagline {
+  display: inline-block;
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255,255,255,0.18);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
 .brand-content h2 {
-  font-size: 32px; font-weight: 700; color: #fff;
+  font-size: 34px; font-weight: 800; color: #fff;
   line-height: 1.35; margin-bottom: 14px;
 }
-.brand-content p { font-size: 15px; color: rgba(255,255,255,0.75); margin-bottom: 28px; }
+.brand-content p { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
 .feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-.feature-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.85); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.6); flex-shrink: 0; }
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255,255,255,0.14);
+  padding: 12px 16px;
+  border-radius: 16px;
+}
+.dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
 
 .login-right {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 48px;
   background: var(--color-bg-primary);
 }
+.right-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.18; pointer-events: none; }
+.blob-c { width: 260px; height: 260px; background: var(--color-secondary); top: -60px; right: -40px; }
+.blob-d { width: 220px; height: 220px; background: var(--color-primary-light); bottom: -50px; left: -30px; }
 .login-box {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   background: var(--color-bg-primary);
   border: 1.5px solid var(--color-primary-light);
   border-radius: 28px;
-  padding: 40px 36px;
+  padding: 44px 40px;
   box-shadow: 0 20px 50px -12px rgba(217, 138, 21, 0.22);
 }
 .back-link {
@@ -254,5 +321,12 @@ async function handleRegister() {
   border-radius: var(--radius-md);
   font-size: 13px;
   color: #16a34a;
+}
+
+@media (max-width: 900px) {
+  .login-layout { grid-template-columns: 1fr; }
+  .login-left { padding: 40px 24px; }
+  .left-inner { max-width: 100%; }
+  .login-right { padding: 32px 20px; }
 }
 </style>

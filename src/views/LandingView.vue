@@ -11,7 +11,7 @@
         <div class="hero-content fade-in-up">
           <span class="hero-badge">우리 동네 어르신 배움터</span>
           <h1 class="hero-title">다시 배우는 즐거움,<br>가까운 곳에서 만나보세요</h1>
-          <p class="hero-desc">서예, 태권도, 노래교실까지 — 우리 동네 선생님과 함께 부담 없이 시작해보세요.</p>
+          <p class="hero-desc">서예, 태권도, 노래교실까지<br />— 우리 동네 선생님과 함께 부담 없이 시작해보세요.</p>
           <div class="hero-actions">
             <router-link to="/login" class="btn btn-primary btn-lg btn-cta">지금 신청하기 <span class="btn-arrow">→</span></router-link>
             <router-link to="/courses" class="btn btn-outline btn-lg btn-cta">강좌 둘러보기</router-link>
@@ -35,9 +35,9 @@
           <div class="visual-card">
             <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="hero-logo" />
           </div>
-          <span class="floating-chip chip-1">🖌️</span>
-          <span class="floating-chip chip-2">🥋</span>
-          <span class="floating-chip chip-3">🎤</span>
+          <span class="floating-chip chip-1">🌸</span>
+          <span class="floating-chip chip-2">🌿</span>
+          <span class="floating-chip chip-3">🌷</span>
         </div>
       </div>
     </section>
@@ -62,6 +62,15 @@
                 <span class="instructor">{{ course.instructor }}</span>
                 <span class="price">{{ course.price }}</span>
               </div>
+              <button
+                type="button"
+                class="btn-add-cart"
+                :class="{ added: addedIds.has(course.id) }"
+                @click="toggleAdd(course.id)"
+              >
+                <span v-if="addedIds.has(course.id)">✓ 담았어요</span>
+                <span v-else>＋ 강의 담기</span>
+              </button>
             </div>
           </div>
         </div>
@@ -107,7 +116,18 @@
 </template>
 
 <script setup>
+import { reactive } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
+
+// 담은 강좌 id 목록 (UI 전용 - 백엔드 연동 전 임시 상태)
+const addedIds = reactive(new Set())
+function toggleAdd(id) {
+  if (addedIds.has(id)) {
+    addedIds.delete(id)
+  } else {
+    addedIds.add(id)
+  }
+}
 
 const featuredCourses = [
   { id:1, title:'서예 교실',       category:'예술', instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', thumbBg:'thumb-teal',   badgeClass:'badge-teal',   popular:true },
@@ -160,11 +180,11 @@ const features = [
 }
 .hero-badge {
   display: inline-block;
-  padding: 5px 14px;
+  padding: 7px 18px;
   background: var(--color-primary-light);
   color: var(--color-primary);
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -211,15 +231,15 @@ const features = [
   justify-content: center;
 }
 .visual-card {
-  width: 400px;
-  height: 400px;
-  background: #fff;
-  border-radius: 28px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, #ffffff 48%, rgba(255,255,255,0.7) 66%, rgba(255,255,255,0) 100%);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  filter: drop-shadow(0 14px 30px rgba(0,0,0,0.12));
 }
 .hero-logo { width: 100%; height: 100%; object-fit: contain; }
 .floating-chip {
@@ -303,6 +323,29 @@ const features = [
 .card-meta { display: flex; justify-content: space-between; align-items: center; }
 .instructor { font-size: 13px; color: var(--color-text-secondary); }
 .price { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+.btn-add-cart {
+  margin-top: 6px;
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-add-cart:hover { background: var(--color-primary-light); }
+.btn-add-cart.added {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+.btn-add-cart.added:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
 
 /* 특징 */
 .features-section { padding: 64px 0; background: var(--color-bg-primary); }
