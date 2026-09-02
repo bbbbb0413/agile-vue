@@ -111,7 +111,7 @@ const features = [
 
 /* 히어로 */
 .hero {
-  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 50%, #f0f9ff 100%);
+  background: linear-gradient(135deg, #FFF8EC 0%, #FDF1DC 50%, #FFF4E0 100%);
   border-bottom: 1px solid var(--color-border);
   padding: 80px 0 64px;
 }
