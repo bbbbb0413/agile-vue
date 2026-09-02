@@ -11,7 +11,7 @@ export const enrollmentApi = {
     return api.delete(`/api/enrollments/${enrollmentId}`)
   },
   updateNote(enrollmentId, note) {
-    return api.patch(`/api/enrollments/${enrollmentId}/note`, { note })
+    return api.post(`/api/enrollments/${enrollmentId}/note`, { note })
   },
   getRecommendations(userId) {
     return api.get(`/api/recommend/${userId}`)
