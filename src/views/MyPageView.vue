@@ -175,6 +175,8 @@
     <SeniorDetailModal
       v-if="selectedSenior"
       :senior="selectedSenior"
+      :loading="seniorLoading"
+      :load-error="seniorError"
       @close="closeSeniorModal"
     />
 
@@ -197,6 +199,7 @@ import CareReportModal from '@/components/CareReportModal.vue'
 import { useAuthStore } from '@/store/auth.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { courseApi } from '@/api/course.js'
+import { normalizeStudent } from '@/utils/student.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -217,6 +220,8 @@ const instructorError = ref('')
 const selectedCourse = ref(null)
 const selectedSenior = ref(null)
 const reportCourse = ref(null)
+const seniorLoading = ref(false)
+const seniorError = ref('')
 
 const mockReportCourse = Object.freeze({
   id: 999999,
@@ -310,12 +315,32 @@ function closeMembersModal() {
   reportCourse.value = null
 }
 
-function openSeniorModal(senior) {
-  selectedSenior.value = senior
+async function openSeniorModal(member) {
+  // 목록 응답에는 note가 없어 상세 API로 보강한다.
+  selectedSenior.value = member
+  seniorError.value = ''
+
+  if (member.note !== undefined) return
+
+  const courseId = selectedCourse.value?.id
+  if (!courseId || member.userId == null) return
+
+  seniorLoading.value = true
+
+  try {
+    const res = await enrollmentApi.getStudentDetail(courseId, member.userId)
+    const detail = res.data?.data ?? res.data
+    selectedSenior.value = { ...member, ...normalizeStudent(detail) }
+  } catch (error) {
+    seniorError.value = error?.response?.data?.message || '추가정보를 불러오지 못했습니다.'
+  } finally {
+    seniorLoading.value = false
+  }
 }
 
 function closeSeniorModal() {
   selectedSenior.value = null
+  seniorError.value = ''
 }
 
 function openReportModal() {

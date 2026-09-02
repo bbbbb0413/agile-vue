@@ -28,12 +28,35 @@
           </button>
         </header>
 
-        <div class="member-count">총 {{ members.length }}명</div>
+        <div class="member-count">
+          <span v-if="loading">불러오는 중…</span>
+          <span v-else>총 {{ members.length }}명</span>
+        </div>
 
-        <div v-if="members.length" class="member-grid">
+        <div v-if="loading" class="member-grid" aria-hidden="true">
+          <div v-for="i in 2" :key="i" class="member-card skeleton-card">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="loadError" class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <h3>목록을 불러오지 못했습니다.</h3>
+          <p>{{ loadError }}</p>
+          <button type="button" class="btn btn-ghost retry-button" @click="loadMembers">
+            다시 시도
+          </button>
+        </div>
+
+        <div v-else-if="members.length" class="member-grid">
           <article
             v-for="member in members"
-            :key="member.id"
+            :key="member.userId"
             class="member-card"
           >
             <div class="member-avatar">{{ member.name?.charAt(0) || '?' }}</div>
@@ -41,12 +64,13 @@
               <div class="member-heading">
                 <h3>{{ member.name || '이름 없음' }}</h3>
                 <span class="status-badge" :class="statusClass(member.enrollmentStatus)">
-                  {{ member.enrollmentStatus || 'UNKNOWN' }}
+                  {{ statusLabel(member.enrollmentStatus) }}
                 </span>
               </div>
               <dl class="basic-info">
-                <div><dt>회원 ID</dt><dd>#{{ member.id }}</dd></div>
+                <div><dt>나이</dt><dd>{{ member.age != null ? `${member.age}세` : '-' }}</dd></div>
                 <div><dt>이메일</dt><dd>{{ member.email || '-' }}</dd></div>
+                <div><dt>신청일</dt><dd>{{ formatDate(member.enrolledAt) }}</dd></div>
               </dl>
               <button
                 type="button"
@@ -60,7 +84,7 @@
         <div v-else class="empty-state">
           <div class="empty-icon">👥</div>
           <h3>참여 어르신이 없습니다.</h3>
-          <p>수강생 조회 API가 연결되면 이 영역에 회원 목록이 표시됩니다.</p>
+          <p>아직 이 프로그램을 신청한 어르신이 없습니다.</p>
         </div>
 
         <footer class="modal-footer">
@@ -68,6 +92,7 @@
           <button
             type="button"
             class="btn btn-primary"
+            :disabled="loading || !members.length"
             @click="showReport"
           >종합 리포트 보기</button>
         </footer>
@@ -77,7 +102,9 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { enrollmentApi } from '@/api/enrollment.js'
+import { normalizeStudent } from '@/utils/student.js'
 
 const props = defineProps({
   course: { type: Object, required: true }
@@ -85,10 +112,56 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'select-member', 'show-report'])
 const closeButton = ref(null)
-const members = computed(() => Array.isArray(props.course.members) ? props.course.members : [])
+
+const members = ref([])
+const loading = ref(false)
+const loadError = ref('')
+
+/** 미리 주입된 members(테스트용 목업)가 있으면 API를 호출하지 않는다. */
+function presetMembers() {
+  return Array.isArray(props.course.members) ? props.course.members : null
+}
+
+async function loadMembers() {
+  const preset = presetMembers()
+  if (preset) {
+    members.value = preset.map(normalizeStudent)
+    return
+  }
+
+  loading.value = true
+  loadError.value = ''
+
+  try {
+    const res = await enrollmentApi.getCourseStudents(props.course.id)
+    const payload = Array.isArray(res.data?.data) ? res.data.data
+      : Array.isArray(res.data) ? res.data
+      : []
+    members.value = payload.map(normalizeStudent)
+  } catch (error) {
+    // enrollment-service는 권한 위반도 400 + message로 내려준다.
+    members.value = []
+    loadError.value = error?.response?.data?.message || '잠시 후 다시 시도해 주세요.'
+  } finally {
+    loading.value = false
+  }
+}
 
 function statusClass(status) {
   return status === 'ACTIVE' ? 'status-active' : 'status-pending'
+}
+
+function statusLabel(status) {
+  if (status === 'ACTIVE') return '수강 중'
+  if (status === 'PENDING') return '대기 중'
+  return status || '-'
+}
+
+function formatDate(value) {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+  return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 function close() {
@@ -111,6 +184,7 @@ onMounted(async () => {
   document.addEventListener('keydown', handleKeydown)
   await nextTick()
   closeButton.value?.focus()
+  await loadMembers()
 })
 
 onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
@@ -143,6 +217,14 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 .detail-label { display: block; margin: 14px 0 0 auto; padding: 0; background: transparent; color: var(--color-primary); cursor: pointer; font-size: 13px; font-weight: 600; text-align: right; }
 .detail-label:hover { text-decoration: underline; }
 .detail-label:focus-visible { border-radius: 3px; outline: 3px solid var(--color-primary-light); outline-offset: 3px; }
+.skeleton-card { align-items: center; }
+.skeleton-avatar { flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--color-bg-tertiary); animation: member-pulse 1.4s ease-in-out infinite; }
+.skeleton-lines { flex: 1; display: grid; gap: 9px; }
+.skeleton-line { height: 11px; border-radius: 999px; background: var(--color-bg-tertiary); animation: member-pulse 1.4s ease-in-out infinite; }
+.skeleton-line.short { width: 42%; }
+@keyframes member-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .skeleton-avatar, .skeleton-line { animation: none; } }
+.retry-button { margin-top: 18px; }
 .empty-state { padding: 56px 28px; text-align: center; }
 .empty-icon { margin-bottom: 12px; font-size: 40px; }
 .empty-state h3 { margin-bottom: 8px; font-size: 18px; }
