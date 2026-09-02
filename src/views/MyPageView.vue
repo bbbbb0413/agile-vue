@@ -108,11 +108,6 @@
               v-for="course in displayedCourses"
               :key="course.id"
               class="instructor-course-card"
-              role="button"
-              tabindex="0"
-              @click="openMembersModal(course)"
-              @keydown.enter="openMembersModal(course)"
-              @keydown.space.prevent="openMembersModal(course)"
             >
               <div class="course-card-top">
                 <div>
@@ -149,7 +144,11 @@
               </div>
 
               <div class="course-card-actions">
-                <span class="report-link-label">참여 어르신 보기 →</span>
+                <button
+                  type="button"
+                  class="report-link-label"
+                  @click="openMembersModal(course)"
+                >참여 어르신 보기 →</button>
               </div>
             </article>
           </div>
@@ -707,20 +706,6 @@ onMounted(async () => {
   border-radius: var(--radius-lg);
   padding: 22px;
   box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.instructor-course-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.instructor-course-card:focus-visible {
-  border-color: var(--color-primary);
-  outline: 3px solid var(--color-primary-light);
-  outline-offset: 2px;
 }
 
 .course-card-top {
@@ -795,14 +780,22 @@ onMounted(async () => {
 }
 
 .report-link-label {
+  padding: 0;
+  background: transparent;
   color: var(--color-primary);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
 }
 
-.instructor-course-card:hover .report-link-label {
+.report-link-label:hover {
   text-decoration: underline;
+}
+
+.report-link-label:focus-visible {
+  border-radius: 3px;
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 3px;
 }
 
 .action-btn {

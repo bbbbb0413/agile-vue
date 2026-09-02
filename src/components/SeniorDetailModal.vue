@@ -8,7 +8,11 @@
             <h2 id="senior-detail-title">{{ senior.name || '회원 정보' }}</h2>
             <p>{{ senior.email || '-' }} · 회원 #{{ senior.id }}</p>
           </div>
-          <button ref="closeButton" type="button" class="close-button" aria-label="어르신 정보 닫기" @click="close">×</button>
+          <button ref="closeButton" type="button" class="close-button" aria-label="어르신 정보 닫기" @click="close">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
         </header>
 
         <div v-if="healthNote" class="health-note">
@@ -62,6 +66,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown, tru
 .modal-header h2 { margin-bottom: 5px; font-size: 23px; }
 .modal-header p { color: var(--color-text-secondary); font-size: 13px; }
 .close-button { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; padding: 0; border-radius: 50%; background: var(--color-bg-tertiary); color: var(--color-text-secondary); font-size: 26px; line-height: 1; }
+.close-button svg { display: block; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 .health-note { margin: 24px 26px; padding: 20px; border-radius: var(--radius-md); background: var(--color-bg-secondary); }
 .health-note h3 { margin-bottom: 10px; color: var(--color-text-muted); font-size: 13px; font-weight: 600; }
 .health-note p { color: var(--color-text-primary); font-size: 15px; line-height: 1.8; white-space: pre-line; overflow-wrap: anywhere; }

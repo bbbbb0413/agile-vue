@@ -21,7 +21,11 @@
             class="close-button"
             aria-label="참여 어르신 목록 닫기"
             @click="close"
-          >×</button>
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
         </header>
 
         <div class="member-count">총 {{ members.length }}명</div>
@@ -31,11 +35,6 @@
             v-for="member in members"
             :key="member.id"
             class="member-card"
-            role="button"
-            tabindex="0"
-            @click="selectMember(member)"
-            @keydown.enter="selectMember(member)"
-            @keydown.space.prevent="selectMember(member)"
           >
             <div class="member-avatar">{{ member.name?.charAt(0) || '?' }}</div>
             <div class="member-info">
@@ -49,7 +48,11 @@
                 <div><dt>회원 ID</dt><dd>#{{ member.id }}</dd></div>
                 <div><dt>이메일</dt><dd>{{ member.email || '-' }}</dd></div>
               </dl>
-              <span class="detail-label">추가정보 보기 →</span>
+              <button
+                type="button"
+                class="detail-label"
+                @click="selectMember(member)"
+              >추가정보 보기 →</button>
             </div>
           </article>
         </div>
@@ -121,12 +124,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 .modal-title { margin-bottom: 6px; font-size: 24px; }
 .modal-subtitle { color: var(--color-text-secondary); font-size: 14px; }
 .close-button { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; padding: 0; border-radius: 50%; background: var(--color-bg-tertiary); color: var(--color-text-secondary); font-size: 26px; line-height: 1; }
+.close-button svg { display: block; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 .close-button:hover { background: var(--color-primary-light); color: var(--color-primary); }
 .member-count { padding: 20px 28px 0; color: var(--color-text-secondary); font-size: 14px; font-weight: 600; }
 .member-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 16px 28px 28px; }
-.member-card { display: flex; gap: 14px; padding: 18px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-primary); cursor: pointer; transition: var(--transition); }
-.member-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.member-card:focus-visible { border-color: var(--color-primary); outline: 3px solid var(--color-primary-light); outline-offset: 2px; }
+.member-card { display: flex; gap: 14px; padding: 18px; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-primary); }
 .member-avatar { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--color-primary-light); color: var(--color-primary); font-size: 18px; font-weight: 700; }
 .member-info { min-width: 0; flex: 1; }
 .member-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
@@ -138,7 +140,9 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 .basic-info div { display: grid; grid-template-columns: 64px 1fr; gap: 8px; font-size: 13px; }
 .basic-info dt { color: var(--color-text-muted); }
 .basic-info dd { min-width: 0; overflow: hidden; color: var(--color-text-primary); text-overflow: ellipsis; white-space: nowrap; }
-.detail-label { display: block; margin-top: 14px; color: var(--color-primary); font-size: 13px; font-weight: 600; text-align: right; }
+.detail-label { display: block; margin: 14px 0 0 auto; padding: 0; background: transparent; color: var(--color-primary); cursor: pointer; font-size: 13px; font-weight: 600; text-align: right; }
+.detail-label:hover { text-decoration: underline; }
+.detail-label:focus-visible { border-radius: 3px; outline: 3px solid var(--color-primary-light); outline-offset: 3px; }
 .empty-state { padding: 56px 28px; text-align: center; }
 .empty-icon { margin-bottom: 12px; font-size: 40px; }
 .empty-state h3 { margin-bottom: 8px; font-size: 18px; }

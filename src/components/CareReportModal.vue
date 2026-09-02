@@ -25,7 +25,9 @@
             aria-label="리포트 닫기"
             @click="close"
           >
-            ×
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
           </button>
         </header>
 
@@ -54,13 +56,14 @@
               <span class="summary-label">건강정보 등록</span>
               <strong>{{ report.studentsWithNotes ?? 0 }}명</strong>
             </div>
-            <div>
-              <span class="summary-label">생성 시각</span>
-              <strong>{{ formattedGeneratedAt }}</strong>
-            </div>
           </div>
 
           <div class="report-content report-content-filled">
+            <section class="report-section overall-section">
+              <h3>종합 의견</h3>
+              <p>{{ report.overallOpinion || '종합 의견이 없습니다.' }}</p>
+            </section>
+
             <section class="report-section">
               <h3>어르신별 건강정보 요약</h3>
               <div v-if="studentSummaries.length" class="student-summary-list">
@@ -79,11 +82,6 @@
                 </article>
               </div>
               <p v-else class="empty-summary">요약할 건강정보가 없습니다.</p>
-            </section>
-
-            <section class="report-section overall-section">
-              <h3>종합 의견</h3>
-              <p>{{ report.overallOpinion || '종합 의견이 없습니다.' }}</p>
             </section>
 
             <aside v-if="report.disclaimer" class="disclaimer">
@@ -132,14 +130,6 @@ const studentSummaries = computed(() =>
     ? report.value.studentSummaries
     : []
 )
-
-const formattedGeneratedAt = computed(() => {
-  if (!report.value?.generatedAt) return '-'
-  const date = new Date(report.value.generatedAt)
-  return Number.isNaN(date.getTime())
-    ? report.value.generatedAt
-    : date.toLocaleString('ko-KR')
-})
 
 function riskClass(level) {
   return `risk-${String(level || 'UNKNOWN').toLowerCase()}`
@@ -280,9 +270,19 @@ onBeforeUnmount(() => {
   color: var(--color-primary);
 }
 
+.close-button svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
 .program-summary {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   padding: 20px 28px 0;
 }
