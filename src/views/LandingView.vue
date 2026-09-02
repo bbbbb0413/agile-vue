@@ -4,23 +4,40 @@
 
     <!-- 히어로 섹션 -->
     <section class="hero">
+      <div class="hero-blob blob-1"></div>
+      <div class="hero-blob blob-2"></div>
+      <div class="hero-blob blob-3"></div>
       <div class="hero-inner">
         <div class="hero-content fade-in-up">
           <span class="hero-badge">우리 동네 어르신 배움터</span>
           <h1 class="hero-title">다시 배우는 즐거움,<br>가까운 곳에서 만나보세요</h1>
           <p class="hero-desc">서예, 태권도, 노래교실까지 — 우리 동네 선생님과 함께 부담 없이 시작해보세요.</p>
           <div class="hero-actions">
-            <router-link to="/login" class="btn btn-primary btn-lg">지금 신청하기</router-link>
-            <router-link to="/courses" class="btn btn-outline btn-lg">강좌 둘러보기</router-link>
+            <router-link to="/login" class="btn btn-primary btn-lg btn-cta">지금 신청하기 <span class="btn-arrow">→</span></router-link>
+            <router-link to="/courses" class="btn btn-outline btn-lg btn-cta">강좌 둘러보기</router-link>
           </div>
           <div class="hero-stats">
-            <div class="stat"><span class="stat-num">500+</span><span class="stat-label">강좌</span></div>
-            <div class="stat"><span class="stat-num">120+</span><span class="stat-label">선생님</span></div>
-            <div class="stat"><span class="stat-num">12,000+</span><span class="stat-label">회원님</span></div>
+            <div class="stat">
+              <span class="stat-icon">📚</span>
+              <span class="stat-text"><span class="stat-num">500+</span><span class="stat-label">강좌</span></span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">👩‍🏫</span>
+              <span class="stat-text"><span class="stat-num">120+</span><span class="stat-label">선생님</span></span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon">💛</span>
+              <span class="stat-text"><span class="stat-num">12,000+</span><span class="stat-label">회원님</span></span>
+            </div>
           </div>
         </div>
         <div class="hero-visual fade-in">
-          <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="hero-logo" />
+          <div class="visual-card">
+            <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="hero-logo" />
+          </div>
+          <span class="floating-chip chip-1">🖌️</span>
+          <span class="floating-chip chip-2">🥋</span>
+          <span class="floating-chip chip-3">🎤</span>
         </div>
       </div>
     </section>
@@ -35,6 +52,7 @@
         <div class="course-grid">
           <div v-for="course in featuredCourses" :key="course.id" class="course-card-landing">
             <div class="card-thumb" :class="course.thumbBg">
+              <span v-if="course.popular" class="ribbon">인기</span>
               <span class="thumb-emoji">{{ course.icon }}</span>
             </div>
             <div class="card-body">
@@ -56,7 +74,9 @@
         <h2 class="section-title center">왜 다시봄인가요?</h2>
         <div class="features-grid">
           <div v-for="f in features" :key="f.title" class="feature-card">
-            <div class="feature-icon">{{ f.icon }}</div>
+            <div class="feature-icon-badge" :class="f.badgeClass">
+              <span class="feature-icon">{{ f.icon }}</span>
+            </div>
             <h3 class="feature-title">{{ f.title }}</h3>
             <p class="feature-desc">{{ f.desc }}</p>
           </div>
@@ -69,7 +89,7 @@
       <div class="cta-inner">
         <h2>지금 바로 다시 배워보세요</h2>
         <p>이미 많은 어르신들이 다시봄과 함께 즐겁게 배우고 계세요.</p>
-        <router-link to="/login" class="btn btn-primary btn-lg">지금 신청하기</router-link>
+        <router-link to="/login" class="btn btn-primary btn-lg btn-cta">지금 신청하기 <span class="btn-arrow">→</span></router-link>
       </div>
     </section>
 
@@ -90,7 +110,7 @@
 import AppHeader from '@/components/AppHeader.vue'
 
 const featuredCourses = [
-  { id:1, title:'서예 교실',       category:'예술', instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
+  { id:1, title:'서예 교실',       category:'예술', instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', thumbBg:'thumb-teal',   badgeClass:'badge-teal',   popular:true },
   { id:2, title:'태권도 교실',     category:'건강', instructor:'박태권 선생님',   price:'₩15,000', icon:'🥋', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
   { id:3, title:'노래교실',        category:'여가', instructor:'최고운 선생님',   price:'₩8,000',  icon:'🎤', thumbBg:'thumb-pink',   badgeClass:'badge-pink'   },
   { id:4, title:'요가 · 스트레칭', category:'건강', instructor:'정유연 선생님',   price:'₩12,000', icon:'🧘', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
@@ -99,10 +119,10 @@ const featuredCourses = [
 ]
 
 const features = [
-  { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.' },
-  { icon:'👩‍🏫', title:'우리 동네 선생님', desc:'가까운 곳에서 만나는 믿음직한 선생님과 함께해요.' },
-  { icon:'👀', title:'눈에 편안한 화면', desc:'큰 글씨와 또렷한 버튼으로 누구나 쉽게 이용해요.' },
-  { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.' },
+  { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.', badgeClass:'thumb-teal' },
+  { icon:'👩‍🏫', title:'우리 동네 선생님', desc:'가까운 곳에서 만나는 믿음직한 선생님과 함께해요.', badgeClass:'thumb-blue' },
+  { icon:'👀', title:'눈에 편안한 화면', desc:'큰 글씨와 또렷한 버튼으로 누구나 쉽게 이용해요.', badgeClass:'thumb-purple' },
+  { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.', badgeClass:'thumb-pink' },
 ]
 </script>
 
@@ -111,11 +131,25 @@ const features = [
 
 /* 히어로 */
 .hero {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, #FFF8EC 0%, #FDF1DC 50%, #FFF4E0 100%);
   border-bottom: 1px solid var(--color-border);
   padding: 80px 0 64px;
 }
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.blob-1 { width: 320px; height: 320px; background: var(--color-secondary); top: -120px; right: -60px; }
+.blob-2 { width: 260px; height: 260px; background: var(--color-primary-light); bottom: -100px; left: -80px; opacity: 0.8; }
+.blob-3 { width: 200px; height: 200px; background: var(--color-primary); top: 320px; left: 20px; opacity: 0.28; }
 .hero-inner {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
@@ -155,24 +189,58 @@ const features = [
   margin-bottom: 40px;
 }
 .btn-lg { padding: 14px 32px; font-size: 17px; }
-.hero-stats {
-  display: flex;
-  gap: 36px;
+.btn-cta { border-radius: 999px; }
+.btn-arrow {
+  display: inline-block;
+  margin-left: 2px;
+  transition: transform 0.2s ease;
 }
-.stat { display: flex; flex-direction: column; gap: 2px; }
+.btn-cta:hover .btn-arrow { transform: translateX(4px); }
+
+.hero-stats { display: flex; gap: 32px; }
+.stat { display: flex; align-items: center; gap: 10px; }
+.stat-icon { font-size: 22px; }
+.stat-text { display: flex; flex-direction: column; gap: 2px; }
 .stat-num { font-size: 22px; font-weight: 700; color: var(--color-primary); }
 .stat-label { font-size: 13px; color: var(--color-text-secondary); }
+
 .hero-visual {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.hero-logo {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
-  border-radius: 24px;
+.visual-card {
+  width: 220px;
+  height: 220px;
+  background: #fff;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
   box-shadow: var(--shadow-lg);
+}
+.hero-logo { width: 100%; height: 100%; object-fit: contain; }
+.floating-chip {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  animation: floatChip 3s ease-in-out infinite;
+}
+.chip-1 { top: -6px; left: -18px; animation-delay: 0s; }
+.chip-2 { bottom: 6px; right: -22px; animation-delay: 0.6s; }
+.chip-3 { top: 45%; right: -32px; animation-delay: 1.2s; }
+@keyframes floatChip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 /* 강좌 섹션 */
@@ -206,17 +274,30 @@ const features = [
   box-shadow: var(--shadow-md);
 }
 .card-thumb {
+  position: relative;
   height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
-.thumb-teal   { background: #E1F5EE; }
-.thumb-blue   { background: #E6F1FB; }
-.thumb-purple { background: #EEEDFE; }
-.thumb-pink   { background: #FBEAF0; }
+.thumb-teal   { background: linear-gradient(135deg, #E1F5EE, #CFF0E2); }
+.thumb-blue   { background: linear-gradient(135deg, #E6F1FB, #D8ECFC); }
+.thumb-purple { background: linear-gradient(135deg, #EEEDFE, #E3E1FC); }
+.thumb-pink   { background: linear-gradient(135deg, #FBEAF0, #F8DCE7); }
 .thumb-emoji  { font-size: 40px; line-height: 1; }
+.ribbon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+}
 .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
 .card-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }
 .card-meta { display: flex; justify-content: space-between; align-items: center; }
@@ -239,7 +320,16 @@ const features = [
   transition: var(--transition);
 }
 .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.feature-icon { font-size: 32px; margin-bottom: 12px; }
+.feature-icon-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.feature-icon { font-size: 28px; }
 .feature-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
 .feature-desc { font-size: 15px; color: var(--color-text-secondary); line-height: 1.7; }
 
