@@ -44,7 +44,7 @@
         <div v-else-if="enrollments.length" class="enrollment-list fade-in">
           <div v-for="item in enrollments" :key="item.id" class="enrollment-card">
             <div class="enroll-thumb" :class="getThumbBg(item.course?.category)">
-              <img :src="getThumbSrc(item.course)" :alt="item.course?.title" />
+              <span class="thumb-emoji" aria-hidden="true">{{ getThumbEmoji(item.course?.category) }}</span>
             </div>
 
             <div class="enroll-info">
@@ -89,6 +89,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { useAuthStore } from '@/store/auth.js'
+import { getCategoryStyle } from '@/constants/categories.js'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -98,30 +99,16 @@ const loading = ref(true)
 
 const isInstructor = computed(() => auth.user?.role === 'INSTRUCTOR')
 
-const categoryConfig = {
-  '백엔드': { bg: 'thumb-teal', badge: 'badge-teal', thumb: 'spring_boot' },
-  '프론트엔드': { bg: 'thumb-teal', badge: 'badge-teal', thumb: 'vue_js' },
-  'DevOps': { bg: 'thumb-blue', badge: 'badge-blue', thumb: 'kubernetes' },
-  '데이터': { bg: 'thumb-purple', badge: 'badge-purple', thumb: 'python' },
-  'AI': { bg: 'thumb-pink', badge: 'badge-pink', thumb: 'generative_ai' },
-}
-
 function getThumbBg(cat) {
-  return categoryConfig[cat]?.bg || 'thumb-gray'
+  return getCategoryStyle(cat).bg
 }
 
 function getBadge(cat) {
-  return categoryConfig[cat]?.badge || 'badge-gray'
+  return getCategoryStyle(cat).badge
 }
 
-function getThumbSrc(course) {
-  const key = course?.thumbnail || categoryConfig[course?.category]?.thumb
-  if (!key) return ''
-  try {
-    return new URL(`../assets/images/courses/${key}.png`, import.meta.url).href
-  } catch {
-    return ''
-  }
+function getThumbEmoji(cat) {
+  return getCategoryStyle(cat).emoji
 }
 
 function handleLogout() {
@@ -269,11 +256,9 @@ onMounted(async () => {
   overflow: hidden;
 }
 
-.enroll-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 8px;
+.thumb-emoji {
+  font-size: 34px;
+  line-height: 1;
 }
 
 .thumb-teal {
@@ -284,12 +269,20 @@ onMounted(async () => {
   background: #E6F1FB;
 }
 
+.thumb-amber {
+  background: #FAEEDA;
+}
+
 .thumb-purple {
   background: #EEEDFE;
 }
 
 .thumb-pink {
   background: #FBEAF0;
+}
+
+.thumb-green {
+  background: #E4F4E2;
 }
 
 .thumb-gray {
