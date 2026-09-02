@@ -6,36 +6,36 @@
     <section class="hero">
       <div class="hero-inner">
         <div class="hero-content fade-in-up">
-          <span class="hero-badge">MSA 기반 교육 플랫폼</span>
-          <h1 class="hero-title">배움을 더 스마트하게,<br>커리어를 더 빠르게</h1>
-          <p class="hero-desc">개발, 디자인, 비즈니스 분야의 전문가 강의를 수강하고 실력을 키워보세요.</p>
+          <span class="hero-badge">우리 동네 어르신 배움터</span>
+          <h1 class="hero-title">다시 배우는 즐거움,<br>가까운 곳에서 만나보세요</h1>
+          <p class="hero-desc">서예, 태권도, 노래교실까지 — 우리 동네 선생님과 함께 부담 없이 시작해보세요.</p>
           <div class="hero-actions">
-            <router-link to="/login" class="btn btn-primary btn-lg">무료로 시작하기</router-link>
-            <router-link to="/courses" class="btn btn-outline btn-lg">강의 둘러보기</router-link>
+            <router-link to="/login" class="btn btn-primary btn-lg">지금 신청하기</router-link>
+            <router-link to="/courses" class="btn btn-outline btn-lg">강좌 둘러보기</router-link>
           </div>
           <div class="hero-stats">
-            <div class="stat"><span class="stat-num">1,200+</span><span class="stat-label">강의</span></div>
-            <div class="stat"><span class="stat-num">340+</span><span class="stat-label">강사</span></div>
-            <div class="stat"><span class="stat-num">28,000+</span><span class="stat-label">수강생</span></div>
+            <div class="stat"><span class="stat-num">500+</span><span class="stat-label">강좌</span></div>
+            <div class="stat"><span class="stat-num">120+</span><span class="stat-label">선생님</span></div>
+            <div class="stat"><span class="stat-num">12,000+</span><span class="stat-label">회원님</span></div>
           </div>
         </div>
         <div class="hero-visual fade-in">
-          <img src="@/assets/images/logo/main_logo.png" alt="LearnNexus" class="hero-logo" />
+          <img src="@/assets/images/logo/main_logo.png" alt="다시봄" class="hero-logo" />
         </div>
       </div>
     </section>
 
-    <!-- 인기 강의 -->
+    <!-- 인기 강좌 -->
     <section class="popular-section">
       <div class="section-inner">
         <div class="section-header">
-          <h2 class="section-title">인기 강의</h2>
+          <h2 class="section-title">인기 강좌</h2>
           <router-link to="/login" class="section-link">전체 보기 →</router-link>
         </div>
         <div class="course-grid">
           <div v-for="course in featuredCourses" :key="course.id" class="course-card-landing">
             <div class="card-thumb" :class="course.thumbBg">
-              <img :src="course.thumbSrc" :alt="course.title" class="thumb-img" />
+              <span class="thumb-emoji">{{ course.icon }}</span>
             </div>
             <div class="card-body">
               <span class="badge" :class="course.badgeClass">{{ course.category }}</span>
@@ -53,7 +53,7 @@
     <!-- 특징 섹션 -->
     <section class="features-section">
       <div class="section-inner">
-        <h2 class="section-title center">왜 LearnNexus인가요?</h2>
+        <h2 class="section-title center">왜 다시봄인가요?</h2>
         <div class="features-grid">
           <div v-for="f in features" :key="f.title" class="feature-card">
             <div class="feature-icon">{{ f.icon }}</div>
@@ -67,9 +67,9 @@
     <!-- CTA -->
     <section class="cta-section">
       <div class="cta-inner">
-        <h2>지금 바로 시작하세요</h2>
-        <p>수천 명의 개발자들이 LearnNexus와 함께 성장하고 있습니다.</p>
-        <router-link to="/login" class="btn btn-primary btn-lg">무료로 시작하기</router-link>
+        <h2>지금 바로 다시 배워보세요</h2>
+        <p>이미 많은 어르신들이 다시봄과 함께 즐겁게 배우고 계세요.</p>
+        <router-link to="/login" class="btn btn-primary btn-lg">지금 신청하기</router-link>
       </div>
     </section>
 
@@ -77,10 +77,10 @@
     <footer class="footer">
       <div class="footer-inner">
         <div class="footer-logo">
-          <img src="@/assets/images/logo/main_logo.png" alt="LearnNexus" />
-          <span>LearnNexus</span>
+          <img src="@/assets/images/logo/main_logo.png" alt="다시봄" />
+          <span>다시봄</span>
         </div>
-        <p class="footer-copy">© 2026 LearnNexus. All rights reserved.</p>
+        <p class="footer-copy">© 2026 다시봄. All rights reserved.</p>
       </div>
     </footer>
   </div>
@@ -89,27 +89,20 @@
 <script setup>
 import AppHeader from '@/components/AppHeader.vue'
 
-import springImg   from '@/assets/images/courses/spring_boot.png'
-import vueImg      from '@/assets/images/courses/vue_js.png'
-import k8sImg      from '@/assets/images/courses/kubernetes.png'
-import dockerImg   from '@/assets/images/courses/docker.png'
-import pythonImg   from '@/assets/images/courses/python.png'
-import genaiImg    from '@/assets/images/courses/generative_ai.png'
-
 const featuredCourses = [
-  { id:1, title:'Spring Boot MSA 완성', category:'백엔드',    instructor:'김강사', price:'₩89,000', thumbSrc: springImg, thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
-  { id:2, title:'Vue 3 실전 프로젝트',  category:'프론트엔드', instructor:'이강사', price:'₩69,000', thumbSrc: vueImg,    thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
-  { id:3, title:'Kubernetes 운영 가이드',category:'DevOps',   instructor:'박강사', price:'₩99,000', thumbSrc: k8sImg,    thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
-  { id:4, title:'Docker 컨테이너 실전', category:'DevOps',    instructor:'정강사', price:'₩79,000', thumbSrc: dockerImg, thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
-  { id:5, title:'Python 데이터 분석',   category:'데이터',    instructor:'최강사', price:'₩59,000', thumbSrc: pythonImg, thumbBg:'thumb-purple', badgeClass:'badge-purple' },
-  { id:6, title:'Generative AI 실전',   category:'AI',        instructor:'한강사', price:'₩75,000', thumbSrc: genaiImg,  thumbBg:'thumb-pink',   badgeClass:'badge-pink'   },
+  { id:1, title:'서예 교실',       category:'예술', instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
+  { id:2, title:'태권도 교실',     category:'건강', instructor:'박태권 선생님',   price:'₩15,000', icon:'🥋', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
+  { id:3, title:'노래교실',        category:'여가', instructor:'최고운 선생님',   price:'₩8,000',  icon:'🎤', thumbBg:'thumb-pink',   badgeClass:'badge-pink'   },
+  { id:4, title:'요가 · 스트레칭', category:'건강', instructor:'정유연 선생님',   price:'₩12,000', icon:'🧘', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
+  { id:5, title:'스마트폰 활용법', category:'생활', instructor:'김디지털 선생님', price:'무료',     icon:'📱', thumbBg:'thumb-purple', badgeClass:'badge-purple' },
+  { id:6, title:'텃밭 가꾸기',     category:'여가', instructor:'한농부 선생님',   price:'₩5,000',  icon:'🌱', thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
 ]
 
 const features = [
-  { icon:'🚀', title:'실무 중심 커리큘럼', desc:'현업 전문가가 직접 설계한 실무 중심 강의로 빠르게 성장하세요.' },
-  { icon:'🎯', title:'맞춤 강의 추천', desc:'AI 기반 추천 시스템이 수강 이력을 분석해 딱 맞는 강의를 추천합니다.' },
-  { icon:'💳', title:'간편한 수강 신청', desc:'원클릭 결제와 즉시 수강으로 학습을 바로 시작하세요.' },
-  { icon:'📱', title:'언제 어디서나', desc:'PC, 태블릿, 모바일 어디서든 끊김 없이 학습하세요.' },
+  { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.' },
+  { icon:'👩‍🏫', title:'우리 동네 선생님', desc:'가까운 곳에서 만나는 믿음직한 선생님과 함께해요.' },
+  { icon:'👀', title:'눈에 편안한 화면', desc:'큰 글씨와 또렷한 버튼으로 누구나 쉽게 이용해요.' },
+  { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.' },
 ]
 </script>
 
@@ -150,9 +143,9 @@ const features = [
   margin-bottom: 16px;
 }
 .hero-desc {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--color-text-secondary);
-  line-height: 1.7;
+  line-height: 1.8;
   max-width: 460px;
   margin-bottom: 28px;
 }
@@ -161,14 +154,14 @@ const features = [
   gap: 12px;
   margin-bottom: 40px;
 }
-.btn-lg { padding: 12px 28px; font-size: 15px; }
+.btn-lg { padding: 14px 32px; font-size: 17px; }
 .hero-stats {
   display: flex;
   gap: 36px;
 }
 .stat { display: flex; flex-direction: column; gap: 2px; }
 .stat-num { font-size: 22px; font-weight: 700; color: var(--color-primary); }
-.stat-label { font-size: 12px; color: var(--color-text-secondary); }
+.stat-label { font-size: 13px; color: var(--color-text-secondary); }
 .hero-visual {
   display: flex;
   align-items: center;
@@ -182,7 +175,7 @@ const features = [
   box-shadow: var(--shadow-lg);
 }
 
-/* 강의 섹션 */
+/* 강좌 섹션 */
 .popular-section { padding: 64px 0; }
 .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .section-header {
@@ -223,12 +216,12 @@ const features = [
 .thumb-blue   { background: #E6F1FB; }
 .thumb-purple { background: #EEEDFE; }
 .thumb-pink   { background: #FBEAF0; }
-.thumb-img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
+.thumb-emoji  { font-size: 40px; line-height: 1; }
 .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
-.card-title { font-size: 14px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }
+.card-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }
 .card-meta { display: flex; justify-content: space-between; align-items: center; }
-.instructor { font-size: 12px; color: var(--color-text-secondary); }
-.price { font-size: 14px; font-weight: 600; color: var(--color-primary); }
+.instructor { font-size: 13px; color: var(--color-text-secondary); }
+.price { font-size: 15px; font-weight: 600; color: var(--color-primary); }
 
 /* 특징 */
 .features-section { padding: 64px 0; background: var(--color-bg-primary); }
@@ -247,8 +240,8 @@ const features = [
 }
 .feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .feature-icon { font-size: 32px; margin-bottom: 12px; }
-.feature-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-.feature-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.feature-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+.feature-desc { font-size: 15px; color: var(--color-text-secondary); line-height: 1.7; }
 
 /* CTA */
 .cta-section {
