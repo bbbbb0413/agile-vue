@@ -53,6 +53,18 @@
           <div v-for="course in featuredCourses" :key="course.id" class="course-card-landing">
             <div class="card-thumb" :class="course.thumbBg">
               <span v-if="course.popular" class="ribbon">인기</span>
+              <button
+                type="button"
+                class="favorite-button"
+                :class="{ active: favoriteIds.has(course.id) }"
+                :aria-pressed="favoriteIds.has(course.id)"
+                :aria-label="favoriteIds.has(course.id) ? '찜 삭제' : '찜 추가'"
+                :title="favoriteIds.has(course.id) ? '찜 삭제' : '찜 추가'"
+                :disabled="favoriteLoadingIds.has(course.id)"
+                @click.stop="toggleFavorite(course.id)"
+              >
+                {{ favoriteIds.has(course.id) ? '♥' : '♡' }}
+              </button>
               <span class="thumb-emoji">{{ course.icon }}</span>
             </div>
             <div class="card-body">
@@ -115,9 +127,13 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import { getCategoryStyle } from '@/constants/categories.js'
+import { enrollmentApi } from '@/api/enrollment.js'
+import { useAuthStore } from '@/store/auth.js'
+
+const auth = useAuthStore()
 
 // 담은 강좌 id 목록 (UI 전용 - 백엔드 연동 전 임시 상태)
 const addedIds = reactive(new Set())
@@ -126,6 +142,45 @@ function toggleAdd(id) {
     addedIds.delete(id)
   } else {
     addedIds.add(id)
+  }
+}
+
+const favoriteIds = reactive(new Set())
+const favoriteLoadingIds = reactive(new Set())
+
+async function loadFavorites() {
+  if (!auth.isAuthenticated || auth.isInstructor) return
+
+  try {
+    const res = await enrollmentApi.getFavorites()
+    const favorites = Array.isArray(res.data?.data) ? res.data.data : []
+    favorites.forEach(favorite => favoriteIds.add(Number(favorite.courseId)))
+  } catch (error) {
+    console.error('[Landing] failed to load favorites:', error)
+  }
+}
+
+async function toggleFavorite(courseId) {
+  if (!auth.isAuthenticated) {
+    window.location.href = '/login'
+    return
+  }
+
+  if (auth.isInstructor || favoriteLoadingIds.has(courseId)) return
+
+  favoriteLoadingIds.add(courseId)
+  try {
+    if (favoriteIds.has(courseId)) {
+      await enrollmentApi.deleteFavorite(courseId)
+      favoriteIds.delete(courseId)
+    } else {
+      await enrollmentApi.addFavorite(courseId)
+      favoriteIds.add(courseId)
+    }
+  } catch (error) {
+    console.error('[Landing] favorite update failed:', error)
+  } finally {
+    favoriteLoadingIds.delete(courseId)
   }
 }
 
@@ -149,6 +204,8 @@ const features = [
   { icon:'👀', title:'눈에 편안한 화면', desc:'큰 글씨와 또렷한 버튼으로 누구나 쉽게 이용해요.', badgeClass:'thumb-purple' },
   { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.', badgeClass:'thumb-pink' },
 ]
+
+onMounted(loadFavorites)
 </script>
 
 <style scoped>
@@ -325,6 +382,36 @@ const features = [
   padding: 3px 10px;
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
+}
+.favorite-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #c24146;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.favorite-button:hover:not(:disabled),
+.favorite-button.active {
+  background: #fff5f5;
+  border-color: #e56b6f;
+  transform: scale(1.08);
+}
+.favorite-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
 .card-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }

@@ -27,6 +27,20 @@
 
             <div class="enroll-body">
               <button
+                type="button"
+                class="favorite-button"
+                :class="{ active: isFavorite }"
+                :aria-pressed="isFavorite"
+                :aria-label="isFavorite ? '찜 삭제' : '찜 추가'"
+                :title="isFavorite ? '찜 삭제' : '찜 추가'"
+                :disabled="favoriteLoading || isInstructor"
+                @click="toggleFavorite"
+              >
+                <span aria-hidden="true">{{ isFavorite ? '♥' : '♡' }}</span>
+                {{ isFavorite ? '찜한 강의' : '찜하기' }}
+              </button>
+
+              <button
                 class="btn btn-primary btn-full"
                 @click="handlePrimaryAction"
                 :disabled="buttonDisabled"
@@ -37,6 +51,7 @@
               </button>
 
               <div v-if="enrollError" class="error-msg">{{ enrollError }}</div>
+              <div v-if="favoriteError" class="error-msg">{{ favoriteError }}</div>
 
               <p class="helper-text" v-if="helperText">
                 {{ helperText }}
@@ -80,6 +95,9 @@ const auth = useAuthStore()
 const enrolling = ref(false)
 const enrollError = ref('')
 const enrollmentStatus = ref('NONE') // NONE | PENDING | ACTIVE
+const isFavorite = ref(false)
+const favoriteLoading = ref(false)
+const favoriteError = ref('')
 
 const course = computed(() => courseStore.selectedCourse)
 const loading = computed(() => courseStore.loading)
@@ -177,6 +195,49 @@ async function loadEnrollmentStatus() {
   }
 }
 
+async function loadFavoriteStatus() {
+  if (!auth.user?.id || !course.value?.id || isInstructor.value) {
+    isFavorite.value = false
+    return
+  }
+
+  try {
+    const res = await enrollmentApi.getFavorites()
+    const favorites = Array.isArray(res.data?.data)
+      ? res.data.data
+      : Array.isArray(res.data)
+        ? res.data
+        : []
+
+    isFavorite.value = favorites.some(item => Number(item.courseId) === Number(course.value.id))
+  } catch (error) {
+    console.error('[CourseDetail] failed to load favorite status:', error)
+    isFavorite.value = false
+  }
+}
+
+async function toggleFavorite() {
+  if (!course.value?.id || isInstructor.value || favoriteLoading.value) return
+
+  favoriteLoading.value = true
+  favoriteError.value = ''
+
+  try {
+    if (isFavorite.value) {
+      await enrollmentApi.deleteFavorite(course.value.id)
+      isFavorite.value = false
+    } else {
+      await enrollmentApi.addFavorite(course.value.id)
+      isFavorite.value = true
+    }
+  } catch (error) {
+    console.error('[CourseDetail] favorite update failed:', error)
+    favoriteError.value = error.response?.data?.message || '찜 상태를 변경하지 못했습니다.'
+  } finally {
+    favoriteLoading.value = false
+  }
+}
+
 async function handlePrimaryAction() {
   enrollError.value = ''
 
@@ -221,6 +282,7 @@ onMounted(async () => {
   await courseStore.fetchCourse(route.params.id)
   console.log('[CourseDetail] selectedCourse =', courseStore.selectedCourse)
   await loadEnrollmentStatus()
+  await loadFavoriteStatus()
 })
 
 watch(
@@ -229,6 +291,7 @@ watch(
     console.log('[CourseDetail] selectedCourse changed =', value)
     if (value?.id) {
       await loadEnrollmentStatus()
+      await loadFavoriteStatus()
     }
   },
   { deep: true }
@@ -316,6 +379,40 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.favorite-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.favorite-button:hover:not(:disabled),
+.favorite-button.active {
+  border-color: #e56b6f;
+  color: #c24146;
+  background: #fff5f5;
+}
+
+.favorite-button span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.favorite-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .enroll-price {
