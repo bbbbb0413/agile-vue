@@ -23,12 +23,6 @@
           </router-link>
         </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-label">계정</div>
-          <button class="sidebar-item sidebar-btn" @click="handleLogout">
-            <span class="si-icon">🚪</span> 로그아웃
-          </button>
-        </div>
       </aside>
 
       <main class="main-content">
