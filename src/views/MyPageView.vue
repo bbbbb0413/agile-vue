@@ -40,6 +40,34 @@
 
         <!-- 학생 화면 -->
         <section v-if="!isInstructor" class="recommend-section">
+          <section class="favorite-section">
+            <div class="section-head">
+              <h3 class="section-title">찜한 강의</h3>
+              <span class="section-subtitle">관심 있는 강의를 모아두었습니다.</span>
+            </div>
+
+            <div v-if="favoriteLoading" class="loading-row">
+              <div v-for="i in 3" :key="i" class="skeleton-card">
+                <div class="skeleton-thumb"></div>
+                <div class="skeleton-body">
+                  <div class="skeleton-line short"></div>
+                  <div class="skeleton-line"></div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else-if="favorites.length" class="recommend-grid fade-in">
+              <CourseCard
+                v-for="favorite in favorites"
+                :key="favorite.id"
+                :course="favorite.course || favorite"
+              />
+            </div>
+
+            <p v-else-if="favoriteError" class="empty-text">{{ favoriteError }}</p>
+            <p v-else class="empty-text">아직 찜한 강의가 없습니다.</p>
+          </section>
+
           <h3 class="section-title">추천 강의</h3>
 
           <p v-if="recommendMessage" class="recommend-message">
@@ -119,7 +147,7 @@
               <div class="course-meta-grid">
                 <div class="meta-box">
                   <div class="meta-label">카테고리</div>
-                  <div class="meta-value">{{ getCategoryLabel(course.category) || '-' }}</div>
+                  <div class="meta-value">{{ course.category || '-' }}</div>
                 </div>
                 <div class="meta-box">
                   <div class="meta-label">참여 회원 수</div>
@@ -202,6 +230,9 @@ const recommendations = ref([])
 const recommendLoading = ref(true)
 const recommendError = ref('')
 const recommendMessage = ref('')
+const favorites = ref([])
+const favoriteLoading = ref(true)
+const favoriteError = ref('')
 
 /* 강사용 */
 const myCourses = ref([])
@@ -390,6 +421,24 @@ async function loadStudentRecommendations() {
   }
 }
 
+async function loadFavorites() {
+  try {
+    const res = await enrollmentApi.getFavorites()
+    const payload = res.data
+
+    favorites.value = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+        ? payload
+        : []
+  } catch (error) {
+    console.error('[MyPage] failed to load favorites:', error)
+    favoriteError.value = '찜한 강의를 불러오지 못했습니다.'
+  } finally {
+    favoriteLoading.value = false
+  }
+}
+
 async function loadInstructorCourses() {
   try {
     if (!auth.user) {
@@ -455,7 +504,7 @@ onMounted(async () => {
     await loadInstructorCourses()
   } else {
     instructorLoading.value = false
-    await loadStudentRecommendations()
+    await Promise.all([loadStudentRecommendations(), loadFavorites()])
   }
 })
 </script>
@@ -467,12 +516,12 @@ onMounted(async () => {
 }
 
 .page-layout {
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 32px 12px;
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 28px;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
 }
 
 .sidebar {
@@ -489,7 +538,7 @@ onMounted(async () => {
 }
 
 .sidebar-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -500,10 +549,10 @@ onMounted(async () => {
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
+  gap: 12px;
+  padding: 11px 14px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text-secondary);
   transition: var(--transition);
   background: none;
@@ -527,7 +576,7 @@ onMounted(async () => {
 }
 
 .si-icon {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .main-content {

@@ -139,12 +139,12 @@ onMounted(() => {
 }
 
 .page-layout {
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 32px 12px;
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 28px;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
 }
 
 /* 사이드바 */
@@ -162,7 +162,7 @@ onMounted(() => {
 }
 
 .sidebar-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -173,10 +173,10 @@ onMounted(() => {
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
+  gap: 12px;
+  padding: 11px 14px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text-secondary);
   transition: var(--transition);
   background: none;
@@ -200,7 +200,7 @@ onMounted(() => {
 }
 
 .si-icon {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .sidebar-btn {
@@ -221,14 +221,14 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 22px;
+  font-size: 27px;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .page-subtitle {
   margin-top: 6px;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--color-text-muted);
 }
 

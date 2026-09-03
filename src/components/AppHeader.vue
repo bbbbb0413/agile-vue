@@ -61,38 +61,38 @@ function handleLogout() {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  height: 96px;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 48px;
 }
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   flex-shrink: 0;
 }
 .logo-img {
-  width: 36px;
-  height: 36px;
+  width: 54px;
+  height: 54px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 .logo-text {
-  font-size: 17px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--color-text-primary);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
 }
 .nav-links {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
 }
 .nav-link {
-  padding: 6px 14px;
+  padding: 9px 21px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 21px;
   font-weight: 500;
   color: var(--color-text-secondary);
   transition: var(--transition);
@@ -105,20 +105,20 @@ function handleLogout() {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-left: auto;
 }
 .btn-sm {
-  padding: 7px 16px;
-  font-size: 13px;
+  padding: 11px 24px;
+  font-size: 20px;
 }
 .user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 51px;
+  height: 51px;
   border-radius: 50%;
   background: var(--color-primary-light);
   color: var(--color-primary);
-  font-size: 13px;
+  font-size: 20px;
   font-weight: 600;
   display: flex;
   align-items: center;
