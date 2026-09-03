@@ -9,15 +9,15 @@ export const useCourseStore = defineStore('course', () => {
   const error = ref(null)
   const selectedCategory = ref('전체')
 
-  const categories = ['전체', '백엔드', '프론트엔드', 'DevOps', '데이터', 'AI']
+  const categories = ['전체', '예술', '건강', '여가', '생활', '기타']
 
   // 백엔드 카테고리 → 프론트 표시용 카테고리
   const categoryLabelMap = {
-    BACKEND: '백엔드',
-    FRONTEND: '프론트엔드',
-    DEVOPS: 'DevOps',
-    DATA: '데이터',
-    AI: 'AI'
+    BACKEND: '예술',
+    FRONTEND: '건강',
+    DEVOPS: '여가',
+    DATA: '생활',
+    AI: '기타'
   }
 
   // 썸네일 이미지 매핑
@@ -31,11 +31,11 @@ export const useCourseStore = defineStore('course', () => {
   }
 
   const categoryThumbnailMap = {
-    '백엔드': thumbnailMap.SPRING,
-    '프론트엔드': thumbnailMap.VUE,
-    'DevOps': thumbnailMap.KUBERNETES,
-    '데이터': thumbnailMap.PYTHON,
-    'AI': thumbnailMap.AI
+    '예술': thumbnailMap.SPRING,
+    '건강': thumbnailMap.VUE,
+    '여가': thumbnailMap.KUBERNETES,
+    '생활': thumbnailMap.PYTHON,
+    '기타': thumbnailMap.AI
   }
 
   function normalizeCategory(category) {
