@@ -104,13 +104,11 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import CourseCard from '@/components/CourseCard.vue'
 import { useCourseStore } from '@/store/course.js'
 import { useAuthStore } from '@/store/auth.js'
 
-const router = useRouter()
 const courseStore = useCourseStore()
 const auth = useAuthStore()
 
@@ -127,11 +125,6 @@ const filteredCourses = computed(() => {
 
 function selectCategory(cat) {
   courseStore.setCategory(cat)
-}
-
-function handleLogout() {
-  auth.logout()
-  router.push('/')
 }
 
 onMounted(() => {

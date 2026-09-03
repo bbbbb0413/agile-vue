@@ -11,7 +11,7 @@
         <div class="hero-content fade-in-up">
           <span class="hero-badge">우리 동네 어르신 배움터</span>
           <h1 class="hero-title">다시 배우는 즐거움,<br>가까운 곳에서 만나보세요</h1>
-          <p class="hero-desc">서예, 태권도, 노래교실까지<br />— 우리 동네 선생님과 함께 부담 없이 시작해보세요.</p>
+          <p class="hero-desc">서예, 태권도, 노래교실까지<br />— 우리 동네 강사님과 함께 부담 없이 시작해보세요.</p>
           <div class="hero-actions">
             <router-link to="/login" class="btn btn-primary btn-lg btn-cta">지금 신청하기 <span class="btn-arrow">→</span></router-link>
             <router-link to="/courses" class="btn btn-outline btn-lg btn-cta">강좌 둘러보기</router-link>
@@ -23,7 +23,7 @@
             </div>
             <div class="stat">
               <span class="stat-icon">👩‍🏫</span>
-              <span class="stat-text"><span class="stat-num">120+</span><span class="stat-label">선생님</span></span>
+              <span class="stat-text"><span class="stat-num">120+</span><span class="stat-label">강사</span></span>
             </div>
             <div class="stat">
               <span class="stat-icon">💛</span>
@@ -186,12 +186,12 @@ async function toggleFavorite(courseId) {
 
 // 랜딩용 예시 강좌 (UI 전용 - 백엔드 연동 전 임시 데이터)
 const featuredCourses = [
-  { id:1, title:'서예 교실',       category:'예술',   instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', popular:true },
-  { id:2, title:'태권도 교실',     category:'건강',   instructor:'박태권 선생님',   price:'₩15,000', icon:'🥋' },
-  { id:3, title:'노래교실',        category:'음악',   instructor:'최고운 선생님',   price:'₩8,000',  icon:'🎤' },
-  { id:4, title:'요가 · 스트레칭', category:'건강',   instructor:'정유연 선생님',   price:'₩12,000', icon:'🧘' },
-  { id:5, title:'스마트폰 활용법', category:'디지털', instructor:'김디지털 선생님', price:'무료',     icon:'📱' },
-  { id:6, title:'텃밭 가꾸기',     category:'여가',   instructor:'한농부 선생님',   price:'₩5,000',  icon:'🌱' },
+  { id:1, title:'서예 교실',       category:'예술',   instructor:'이서예 강사',   icon:'🖌️', popular:true },
+  { id:2, title:'태권도 교실',     category:'건강',   instructor:'박태권 강사',   icon:'🥋' },
+  { id:3, title:'노래교실',        category:'음악',   instructor:'최고운 강사',   icon:'🎤' },
+  { id:4, title:'요가 · 스트레칭', category:'건강',   instructor:'정유연 강사',   icon:'🧘' },
+  { id:5, title:'스마트폰 활용법', category:'디지털', instructor:'김디지털 강사', icon:'📱' },
+  { id:6, title:'텃밭 가꾸기',     category:'여가',   instructor:'한농부 강사',   icon:'🌱' },
 ].map(course => ({
   ...course,
   thumbBg: getCategoryStyle(course.category).bg,
@@ -200,7 +200,7 @@ const featuredCourses = [
 
 const features = [
   { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.', badgeClass:'thumb-teal' },
-  { icon:'👩‍🏫', title:'우리 동네 선생님', desc:'가까운 곳에서 만나는 믿음직한 선생님과 함께해요.', badgeClass:'thumb-blue' },
+  { icon:'👩‍🏫', title:'우리 동네 강사', desc:'가까운 곳에서 만나는 믿음직한 강사님과 함께해요.', badgeClass:'thumb-blue' },
   { icon:'👀', title:'눈에 편안한 화면', desc:'큰 글씨와 또렷한 버튼으로 누구나 쉽게 이용해요.', badgeClass:'thumb-purple' },
   { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.', badgeClass:'thumb-pink' },
 ]
@@ -417,7 +417,6 @@ onMounted(loadFavorites)
 .card-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; }
 .card-meta { display: flex; justify-content: space-between; align-items: center; }
 .instructor { font-size: 13px; color: var(--color-text-secondary); }
-.price { font-size: 15px; font-weight: 600; color: var(--color-primary); }
 .btn-add-cart {
   margin-top: 6px;
   width: 100%;

@@ -7,7 +7,7 @@
 
     <!-- 내용 -->
     <div class="card-body">
-      <span class="badge" :class="badgeClass">{{ course.category }}</span>
+      <span class="badge" :class="badgeClass">{{ getCategoryLabel(course.category) }}</span>
       <h3 class="card-title">{{ course.title }}</h3>
       <div class="card-meta">
         <span class="instructor">{{ course.instructorName }}</span>
@@ -21,7 +21,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { getCategoryStyle } from '@/constants/categories.js'
+import { getCategoryLabel, getCategoryStyle } from '@/constants/categories.js'
 
 const props = defineProps({
   course: { type: Object, required: true }
@@ -74,6 +74,9 @@ const thumbEmoji = computed(() => config.value.emoji)
   gap: 6px;
   flex: 1;
 }
+.badge {
+  align-self: flex-start;
+}
 .card-title {
   font-size: 14px;
   font-weight: 600;
@@ -88,11 +91,6 @@ const thumbEmoji = computed(() => config.value.emoji)
 .instructor {
   font-size: 12px;
   color: var(--color-text-secondary);
-}
-.price {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
 }
 .card-footer {
   margin-top: 2px;
