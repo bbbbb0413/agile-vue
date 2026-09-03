@@ -30,7 +30,7 @@ const props = defineProps({
 const config = computed(() => getCategoryStyle(props.course.category))
 const thumbBg = computed(() => config.value.bg)
 const badgeClass = computed(() => config.value.badge)
-const thumbEmoji = computed(() => config.value.emoji)
+const thumbEmoji = computed(() => props.course.emoji || config.value.emoji)
 </script>
 
 <style scoped>

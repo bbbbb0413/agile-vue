@@ -106,7 +106,7 @@ const isInstructor = computed(() => auth.user?.role === 'INSTRUCTOR')
 const config = computed(() => getCategoryStyle(course.value?.category))
 const badgeClass = computed(() => config.value.badge)
 const thumbBg = computed(() => config.value.bg)
-const thumbEmoji = computed(() => config.value.emoji)
+const thumbEmoji = computed(() => course.value?.emoji || config.value.emoji)
 
 const displayCategory = computed(() => getCategoryLabel(course.value?.category) || '-')
 

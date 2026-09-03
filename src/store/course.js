@@ -18,7 +18,7 @@ const MOCK_COURSES = [
   { id: 90005, category: '음악', title: '노래교실', instructorName: '최고운 강사', enrollmentCount: 152 },
   { id: 90006, category: '음악', title: '오카리나 배우기', instructorName: '한소리 강사', enrollmentCount: 58 },
   { id: 90007, category: '여가', title: '텃밭 가꾸기', instructorName: '한농부 강사', enrollmentCount: 203 },
-  { id: 90008, category: '여가', title: '사진 산책 동호회', instructorName: '윤찰칵 강사', enrollmentCount: 45 },
+  { id: 90008, category: '여가', title: '사진 산책 동호회', instructorName: '윤찰칵 강사', enrollmentCount: 45, emoji: '🍀' },
   { id: 90009, category: '생활', title: '집밥 요리교실', instructorName: '조맛나 강사', enrollmentCount: 176 },
   { id: 90010, category: '생활', title: '반려식물 돌보기', instructorName: '임초록 강사', enrollmentCount: 61 },
   { id: 90011, category: '디지털', title: '스마트폰 활용법', instructorName: '김디지털 강사', enrollmentCount: 312 },
