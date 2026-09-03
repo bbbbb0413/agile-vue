@@ -31,15 +31,6 @@
           </router-link>
         </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-label">계정</div>
-          <router-link to="/mypage" class="sidebar-item">
-            <span class="si-icon">👤</span> 마이페이지
-          </router-link>
-          <button class="sidebar-item sidebar-btn" @click="handleLogout">
-            <span class="si-icon">🚪</span> 로그아웃
-          </button>
-        </div>
       </aside>
 
       <!-- 메인 -->
@@ -113,13 +104,11 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import CourseCard from '@/components/CourseCard.vue'
 import { useCourseStore } from '@/store/course.js'
 import { useAuthStore } from '@/store/auth.js'
 
-const router = useRouter()
 const courseStore = useCourseStore()
 const auth = useAuthStore()
 
@@ -136,11 +125,6 @@ const filteredCourses = computed(() => {
 
 function selectCategory(cat) {
   courseStore.setCategory(cat)
-}
-
-function handleLogout() {
-  auth.logout()
-  router.push('/')
 }
 
 onMounted(() => {

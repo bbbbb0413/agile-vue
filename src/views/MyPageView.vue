@@ -23,12 +23,6 @@
           </router-link>
         </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-label">계정</div>
-          <button class="sidebar-item sidebar-btn" @click="handleLogout">
-            <span class="si-icon">🚪</span> 로그아웃
-          </button>
-        </div>
       </aside>
 
       <main class="main-content">
@@ -186,7 +180,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import CourseCard from '@/components/CourseCard.vue'
 import CourseMembersModal from '@/components/CourseMembersModal.vue'
@@ -197,7 +191,6 @@ import { enrollmentApi } from '@/api/enrollment.js'
 import { courseApi } from '@/api/course.js'
 import { normalizeStudent } from '@/utils/student.js'
 
-const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
 
@@ -294,11 +287,6 @@ const totalEnrollmentCount = computed(() =>
     return sum + (Number.isNaN(count) ? 0 : count)
   }, 0)
 )
-
-function handleLogout() {
-  auth.logout()
-  router.push('/')
-}
 
 function openMembersModal(course) {
   selectedCourse.value = course
