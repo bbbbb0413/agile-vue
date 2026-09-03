@@ -118,6 +118,7 @@
 <script setup>
 import { reactive } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
+import { getCategoryStyle } from '@/constants/categories.js'
 
 // 담은 강좌 id 목록 (UI 전용 - 백엔드 연동 전 임시 상태)
 const addedIds = reactive(new Set())
@@ -129,14 +130,19 @@ function toggleAdd(id) {
   }
 }
 
+// 랜딩용 예시 강좌 (UI 전용 - 백엔드 연동 전 임시 데이터)
 const featuredCourses = [
-  { id:1, title:'서예 교실',       category:'예술', instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', thumbBg:'thumb-teal',   badgeClass:'badge-teal',   popular:true },
-  { id:2, title:'태권도 교실',     category:'건강', instructor:'박태권 선생님',   price:'₩15,000', icon:'🥋', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
-  { id:3, title:'노래교실',        category:'여가', instructor:'최고운 선생님',   price:'₩8,000',  icon:'🎤', thumbBg:'thumb-pink',   badgeClass:'badge-pink'   },
-  { id:4, title:'요가 · 스트레칭', category:'건강', instructor:'정유연 선생님',   price:'₩12,000', icon:'🧘', thumbBg:'thumb-blue',   badgeClass:'badge-blue'   },
-  { id:5, title:'스마트폰 활용법', category:'생활', instructor:'김디지털 선생님', price:'무료',     icon:'📱', thumbBg:'thumb-purple', badgeClass:'badge-purple' },
-  { id:6, title:'텃밭 가꾸기',     category:'여가', instructor:'한농부 선생님',   price:'₩5,000',  icon:'🌱', thumbBg:'thumb-teal',   badgeClass:'badge-teal'   },
-]
+  { id:1, title:'서예 교실',       category:'예술',   instructor:'이서예 선생님',   price:'₩10,000', icon:'🖌️', popular:true },
+  { id:2, title:'태권도 교실',     category:'건강',   instructor:'박태권 선생님',   price:'₩15,000', icon:'🥋' },
+  { id:3, title:'노래교실',        category:'음악',   instructor:'최고운 선생님',   price:'₩8,000',  icon:'🎤' },
+  { id:4, title:'요가 · 스트레칭', category:'건강',   instructor:'정유연 선생님',   price:'₩12,000', icon:'🧘' },
+  { id:5, title:'스마트폰 활용법', category:'디지털', instructor:'김디지털 선생님', price:'무료',     icon:'📱' },
+  { id:6, title:'텃밭 가꾸기',     category:'여가',   instructor:'한농부 선생님',   price:'₩5,000',  icon:'🌱' },
+].map(course => ({
+  ...course,
+  thumbBg: getCategoryStyle(course.category).bg,
+  badgeClass: getCategoryStyle(course.category).badge,
+}))
 
 const features = [
   { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.', badgeClass:'thumb-teal' },
@@ -305,6 +311,9 @@ const features = [
 .thumb-blue   { background: linear-gradient(135deg, #E6F1FB, #D8ECFC); }
 .thumb-purple { background: linear-gradient(135deg, #EEEDFE, #E3E1FC); }
 .thumb-pink   { background: linear-gradient(135deg, #FBEAF0, #F8DCE7); }
+.thumb-amber  { background: linear-gradient(135deg, #FAEEDA, #F6E2C2); }
+.thumb-green  { background: linear-gradient(135deg, #E4F4E2, #D3EDD0); }
+.thumb-gray   { background: linear-gradient(135deg, #F1EFE8, #E6E3D9); }
 .thumb-emoji  { font-size: 40px; line-height: 1; }
 .ribbon {
   position: absolute;
