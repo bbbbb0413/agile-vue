@@ -119,7 +119,7 @@
               <div class="course-meta-grid">
                 <div class="meta-box">
                   <div class="meta-label">카테고리</div>
-                  <div class="meta-value">{{ course.category || '-' }}</div>
+                  <div class="meta-value">{{ getCategoryLabel(course.category) || '-' }}</div>
                 </div>
                 <div class="meta-box">
                   <div class="meta-label">참여 회원 수</div>
@@ -190,6 +190,7 @@ import { useAuthStore } from '@/store/auth.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { courseApi } from '@/api/course.js'
 import { normalizeStudent } from '@/utils/student.js'
+import { getCategoryLabel } from '@/constants/categories.js'
 
 const route = useRoute()
 const auth = useAuthStore()
