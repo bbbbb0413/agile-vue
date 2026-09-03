@@ -8,7 +8,6 @@ import {
   getCategoryEmoji,
   getCategoryLabel,
 } from '@/constants/categories.js'
-
 // 백엔드 강의 API 연동 전, 카테고리별로 화면을 미리 채워보기 위한 임시 목업 데이터.
 // 실제 API가 강의를 반환하기 시작하면 이 데이터는 자동으로 사용되지 않는다.
 const MOCK_COURSES = [

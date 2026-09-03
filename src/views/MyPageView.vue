@@ -75,20 +75,20 @@
           </p>
         </section>
 
-        <!-- 강사 화면 -->
+        <!-- 요양사 화면 -->
         <section v-else class="instructor-section">
           <div class="section-head">
-            <h3 class="section-title">내가 등록한 강좌</h3>
-            <span class="section-subtitle">등록한 강좌와 강좌별 수강생 수를 확인할 수 있습니다.</span>
+            <h3 class="section-title">내가 담당하는 프로그램</h3>
+            <span class="section-subtitle">프로그램을 선택하면 참여 회원 종합 리포트를 확인할 수 있습니다.</span>
           </div>
 
           <div class="summary-cards">
             <div class="summary-card">
-              <div class="summary-label">등록 강좌 수</div>
-              <div class="summary-value">{{ myCourses.length }}</div>
+              <div class="summary-label">담당 프로그램 수</div>
+              <div class="summary-value">{{ displayedCourses.length }}</div>
             </div>
             <div class="summary-card">
-              <div class="summary-label">총 수강생 수</div>
+              <div class="summary-label">총 참여 회원 수</div>
               <div class="summary-value">{{ totalEnrollmentCount }}</div>
             </div>
           </div>
@@ -103,9 +103,9 @@
             </div>
           </div>
 
-          <div v-else-if="myCourses.length" class="instructor-course-list fade-in">
-            <div
-              v-for="course in myCourses"
+          <div v-else-if="displayedCourses.length" class="instructor-course-list fade-in">
+            <article
+              v-for="course in displayedCourses"
               :key="course.id"
               class="instructor-course-card"
             >
@@ -132,23 +132,25 @@
                   <div class="meta-value">{{ formatPrice(course.price) }}</div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">수강생 수</div>
+                  <div class="meta-label">참여 회원 수</div>
                   <div class="meta-value">
                     {{ course.enrollment_count ?? course.enrollmentCount ?? 0 }}명
                   </div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">강좌 ID</div>
+                  <div class="meta-label">프로그램 ID</div>
                   <div class="meta-value">#{{ course.id }}</div>
                 </div>
               </div>
 
               <div class="course-card-actions">
-                <router-link :to="`/courses/${course.id}`" class="action-btn action-primary">
-                  강좌 보기
-                </router-link>
+                <button
+                  type="button"
+                  class="report-link-label"
+                  @click="openMembersModal(course)"
+                >참여 어르신 보기 →</button>
               </div>
-            </div>
+            </article>
           </div>
 
           <p v-else-if="instructorError" class="empty-text">
@@ -156,24 +158,51 @@
           </p>
 
           <p v-else class="empty-text">
-            아직 등록한 강좌가 없습니다.
+            아직 담당하는 프로그램이 없습니다.
           </p>
         </section>
       </main>
     </div>
+
+    <CourseMembersModal
+      v-if="selectedCourse"
+      :course="selectedCourse"
+      @close="closeMembersModal"
+      @select-member="openSeniorModal"
+      @show-report="openReportModal"
+    />
+
+    <SeniorDetailModal
+      v-if="selectedSenior"
+      :senior="selectedSenior"
+      :loading="seniorLoading"
+      :load-error="seniorError"
+      @close="closeSeniorModal"
+    />
+
+    <CareReportModal
+      v-if="reportCourse"
+      :course="reportCourse"
+      @close="closeReportModal"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import CourseCard from '@/components/CourseCard.vue'
+import CourseMembersModal from '@/components/CourseMembersModal.vue'
+import SeniorDetailModal from '@/components/SeniorDetailModal.vue'
+import CareReportModal from '@/components/CareReportModal.vue'
 import { useAuthStore } from '@/store/auth.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { courseApi } from '@/api/course.js'
+import { normalizeStudent } from '@/utils/student.js'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 
 const isInstructor = computed(() => auth.user?.role === 'INSTRUCTOR')
@@ -188,9 +217,84 @@ const recommendMessage = ref('')
 const myCourses = ref([])
 const instructorLoading = ref(true)
 const instructorError = ref('')
+const selectedCourse = ref(null)
+const selectedSenior = ref(null)
+const reportCourse = ref(null)
+const seniorLoading = ref(false)
+const seniorError = ref('')
+
+const mockReportCourse = Object.freeze({
+  id: 999999,
+  title: '[테스트] 요가·스트레칭',
+  description: '어르신 대상 저강도 프로그램 UI 테스트 데이터입니다.',
+  category: 'OTHER',
+  price: 0,
+  enrollmentCount: 3,
+  status: 'ACTIVE',
+  members: [
+    {
+      id: 101,
+      name: '김봄',
+      email: 'spring101@example.com',
+      enrollmentStatus: 'ACTIVE',
+      note: '무릎이 조금 불편하고 고혈압이 있어 오래 서 있는 동작은 피하고 싶습니다.'
+    },
+    {
+      id: 102,
+      name: '이새롬',
+      email: 'saerom102@example.com',
+      enrollmentStatus: 'ACTIVE',
+      note: '몸 상태가 양호하고 오늘은 활기찬 기분이며, 가벼운 근력 운동 참여를 희망합니다.'
+    },
+    {
+      id: 103,
+      name: '박다정',
+      email: 'dajeong103@example.com',
+      enrollmentStatus: 'PENDING',
+      note: '조금 피곤하고 허리 통증과 관절염이 있어 낮은 강도의 활동을 희망합니다.'
+    }
+  ],
+  healthReport: {
+    courseId: 999999,
+    courseTitle: '[테스트] 요가·스트레칭',
+    generatedAt: '2026-09-02T09:06:28.365122Z',
+    totalEnrolledStudents: 3,
+    studentsWithNotes: 3,
+    studentSummaries: [
+      {
+        userId: 101,
+        riskLevel: 'MEDIUM',
+        summary: '무릎이 조금 불편하고 고혈압이 있어 오래 서 있는 동작은 피하는 것이 좋습니다.'
+      },
+      {
+        userId: 102,
+        riskLevel: 'LOW',
+        summary: '몸 상태가 양호하고 가벼운 근력 운동 참여를 희망합니다.'
+      },
+      {
+        userId: 103,
+        riskLevel: 'HIGH',
+        summary: '허리 통증과 관절염이 있어 낮은 강도의 활동으로 조정이 필요합니다.'
+      }
+    ],
+    overallOpinion: '허리와 무릎에 불편함이 있는 참여자가 있으므로 서 있는 동작과 허리에 부담이 되는 자세는 줄이고, 의자를 활용한 저강도 스트레칭 중심으로 진행하는 것이 좋습니다.',
+    disclaimer: '본 리포트는 참여자가 직접 작성한 메모를 AI가 요약한 참고 자료이며, 의학적 진단이나 처방이 아닙니다. 실제 조치가 필요한 경우 반드시 참여자 본인 및 필요 시 보건 전문가와 직접 확인하시기 바랍니다.',
+    model: 'gpt-4o-mini'
+  }
+})
+
+const showMockReportCourse = computed(() =>
+  import.meta.env.DEV && route.query.mockCareReport === '1'
+)
+
+const displayedCourses = computed(() =>
+  showMockReportCourse.value
+    ? [...myCourses.value, mockReportCourse]
+    : myCourses.value
+)
 
 const totalEnrollmentCount = computed(() =>
-  myCourses.value.reduce((sum, course) => {
+  displayedCourses.value.reduce((sum, course) => {
     const count = Number(course.enrollment_count ?? course.enrollmentCount ?? 0)
     return sum + (Number.isNaN(count) ? 0 : count)
   }, 0)
@@ -199,6 +303,52 @@ const totalEnrollmentCount = computed(() =>
 function handleLogout() {
   auth.logout()
   router.push('/')
+}
+
+function openMembersModal(course) {
+  selectedCourse.value = course
+}
+
+function closeMembersModal() {
+  selectedCourse.value = null
+  selectedSenior.value = null
+  reportCourse.value = null
+}
+
+async function openSeniorModal(member) {
+  // 목록 응답에는 note가 없어 상세 API로 보강한다.
+  selectedSenior.value = member
+  seniorError.value = ''
+
+  if (member.note !== undefined) return
+
+  const courseId = selectedCourse.value?.id
+  if (!courseId || member.userId == null) return
+
+  seniorLoading.value = true
+
+  try {
+    const res = await enrollmentApi.getStudentDetail(courseId, member.userId)
+    const detail = res.data?.data ?? res.data
+    selectedSenior.value = { ...member, ...normalizeStudent(detail) }
+  } catch (error) {
+    seniorError.value = error?.response?.data?.message || '추가정보를 불러오지 못했습니다.'
+  } finally {
+    seniorLoading.value = false
+  }
+}
+
+function closeSeniorModal() {
+  selectedSenior.value = null
+  seniorError.value = ''
+}
+
+function openReportModal() {
+  reportCourse.value = selectedCourse.value
+}
+
+function closeReportModal() {
+  reportCourse.value = null
 }
 
 function formatPrice(price) {
@@ -575,6 +725,7 @@ onMounted(async () => {
 }
 
 .instructor-course-card {
+  display: block;
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -651,6 +802,25 @@ onMounted(async () => {
 .course-card-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.report-link-label {
+  padding: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.report-link-label:hover {
+  text-decoration: underline;
+}
+
+.report-link-label:focus-visible {
+  border-radius: 3px;
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 3px;
 }
 
 .action-btn {
