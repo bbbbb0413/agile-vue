@@ -10,7 +10,7 @@
             <span class="badge" :class="badgeClass">{{ displayCategory }}</span>
             <h1 class="detail-title">{{ course.title }}</h1>
             <p class="detail-desc">
-              {{ course.description || '선생님과 함께 천천히, 즐겁게 배우는 수업입니다.' }}
+              {{ course.description || '강사님과 함께 천천히, 즐겁게 배우는 수업입니다.' }}
             </p>
 
             <div class="detail-meta">
@@ -26,8 +26,6 @@
             </div>
 
             <div class="enroll-body">
-              <div class="enroll-price">₩{{ displayPrice }}</div>
-
               <button
                 class="btn btn-primary btn-full"
                 @click="handlePrimaryAction"
@@ -112,11 +110,6 @@ const displayEnrollmentCount = computed(() => {
     0
   )
   return Number.isNaN(value) ? 0 : value.toLocaleString()
-})
-
-const displayPrice = computed(() => {
-  const value = Number(course.value?.price ?? 0)
-  return Number.isNaN(value) ? '0' : value.toLocaleString()
 })
 
 const buttonLabel = computed(() => {
@@ -318,12 +311,6 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.enroll-price {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--color-primary);
 }
 
 .btn-full {

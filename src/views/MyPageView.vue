@@ -78,13 +78,13 @@
         <!-- 요양사 화면 -->
         <section v-else class="instructor-section">
           <div class="section-head">
-            <h3 class="section-title">내가 담당하는 프로그램</h3>
-            <span class="section-subtitle">프로그램을 선택하면 참여 회원 종합 리포트를 확인할 수 있습니다.</span>
+            <h3 class="section-title">내가 담당하는 강의</h3>
+            <span class="section-subtitle">강의를 선택하면 참여 회원 종합 리포트를 확인할 수 있습니다.</span>
           </div>
 
           <div class="summary-cards">
             <div class="summary-card">
-              <div class="summary-label">담당 프로그램 수</div>
+              <div class="summary-label">담당 강의 수</div>
               <div class="summary-value">{{ displayedCourses.length }}</div>
             </div>
             <div class="summary-card">
@@ -128,17 +128,13 @@
                   <div class="meta-value">{{ course.category || '-' }}</div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">가격</div>
-                  <div class="meta-value">{{ formatPrice(course.price) }}</div>
-                </div>
-                <div class="meta-box">
                   <div class="meta-label">참여 회원 수</div>
                   <div class="meta-value">
                     {{ course.enrollment_count ?? course.enrollmentCount ?? 0 }}명
                   </div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">프로그램 ID</div>
+                  <div class="meta-label">강의 ID</div>
                   <div class="meta-value">#{{ course.id }}</div>
                 </div>
               </div>
@@ -158,7 +154,7 @@
           </p>
 
           <p v-else class="empty-text">
-            아직 담당하는 프로그램이 없습니다.
+            아직 담당하는 강의가 없습니다.
           </p>
         </section>
       </main>
@@ -226,9 +222,8 @@ const seniorError = ref('')
 const mockReportCourse = Object.freeze({
   id: 999999,
   title: '[테스트] 요가·스트레칭',
-  description: '어르신 대상 저강도 프로그램 UI 테스트 데이터입니다.',
+  description: '어르신 대상 저강도 강의 UI 테스트 데이터입니다.',
   category: 'OTHER',
-  price: 0,
   enrollmentCount: 3,
   status: 'ACTIVE',
   members: [
@@ -349,12 +344,6 @@ function openReportModal() {
 
 function closeReportModal() {
   reportCourse.value = null
-}
-
-function formatPrice(price) {
-  const value = Number(price ?? 0)
-  if (Number.isNaN(value)) return '-'
-  return `${value.toLocaleString()}원`
 }
 
 /**
@@ -776,7 +765,7 @@ onMounted(async () => {
 
 .course-meta-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 18px;
 }

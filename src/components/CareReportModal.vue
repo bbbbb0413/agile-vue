@@ -11,7 +11,7 @@
           <div>
             <span class="report-badge">AI 회원 종합 리포트</span>
             <h2 id="care-report-title" class="modal-title">
-              {{ report?.courseTitle || course.title || '프로그램 리포트' }}
+              {{ report?.courseTitle || course.title || '강의 리포트' }}
             </h2>
             <p class="modal-subtitle">
               참여 회원의 기본정보와 상태를 종합한 리포트입니다.

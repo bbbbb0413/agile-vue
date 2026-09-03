@@ -11,7 +11,6 @@
       <h3 class="card-title">{{ course.title }}</h3>
       <div class="card-meta">
         <span class="instructor">{{ course.instructorName }}</span>
-        <span class="price">₩{{ Number(course.price).toLocaleString() }}</span>
       </div>
       <div class="card-footer">
         <span class="enrolled">수강생 {{ course.enrollmentCount?.toLocaleString() }}명</span>
@@ -89,11 +88,6 @@ const thumbEmoji = computed(() => config.value.emoji)
 .instructor {
   font-size: 12px;
   color: var(--color-text-secondary);
-}
-.price {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
 }
 .card-footer {
   margin-top: 2px;

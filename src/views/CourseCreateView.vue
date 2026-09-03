@@ -45,7 +45,7 @@
         <div class="content-header">
           <div>
             <h1 class="page-title">강의 등록</h1>
-            <p class="page-subtitle">선생님 계정으로 새로운 수업을 등록합니다.</p>
+            <p class="page-subtitle">강사 계정으로 새로운 강의를 등록합니다.</p>
           </div>
         </div>
 
@@ -74,33 +74,18 @@
               ></textarea>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label" for="category">카테고리</label>
-                <select id="category" v-model="form.category" class="form-select">
-                  <option disabled value="">카테고리를 선택하세요</option>
-                  <option
-                    v-for="option in categoryOptions"
-                    :key="option.value"
-                    :value="option.value"
-                  >
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="price">가격</label>
-                <input
-                  id="price"
-                  v-model.number="form.price"
-                  type="number"
-                  min="0"
-                  step="1000"
-                  class="form-input"
-                  placeholder="예: 10000"
-                />
-              </div>
+            <div class="form-group">
+              <label class="form-label" for="category">카테고리</label>
+              <select id="category" v-model="form.category" class="form-select">
+                <option disabled value="">카테고리를 선택하세요</option>
+                <option
+                  v-for="option in categoryOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
             </div>
 
             <div v-if="validationError" class="error-box">
@@ -146,8 +131,7 @@ const auth = useAuthStore()
 const form = reactive({
   title: '',
   description: '',
-  category: '',
-  price: null
+  category: ''
 })
 
 const submitting = ref(false)
@@ -185,17 +169,6 @@ function validateForm() {
     return false
   }
 
-  if (form.price === null || form.price === undefined || form.price === '') {
-    validationError.value = '가격을 입력해 주세요.'
-    return false
-  }
-
-  const price = Number(form.price)
-  if (Number.isNaN(price) || price < 0) {
-    validationError.value = '가격은 0 이상의 숫자로 입력해 주세요.'
-    return false
-  }
-
   return true
 }
 
@@ -212,7 +185,8 @@ async function handleSubmit() {
       title: form.title,
       description: form.description,
       category: form.category,
-      price: Number(form.price)
+      // 기존 Course API 계약을 유지하되 화면에서는 가격을 사용하지 않는다.
+      price: 0
     }
 
     const res = await courseApi.create(payload)
