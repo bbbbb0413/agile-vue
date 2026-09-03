@@ -256,17 +256,17 @@ onMounted(() => {
 /* 필터 */
 .filter-bar {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .filter-chip {
-  padding: 7px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+  padding: 9px 20px;
+  border-radius: 25px;
+  font-size: 16px;
   font-weight: 500;
-  border: 1.5px solid var(--color-border);
+  border: 2px solid var(--color-border);
   background: var(--color-bg-primary);
   color: var(--color-text-secondary);
   transition: var(--transition);

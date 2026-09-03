@@ -45,7 +45,7 @@
         <div class="content-header">
           <div>
             <h1 class="page-title">강의 등록</h1>
-            <p class="page-subtitle">강사 계정으로 새로운 강의를 등록합니다.</p>
+            <p class="page-subtitle">선생님 계정으로 새로운 수업을 등록합니다.</p>
           </div>
         </div>
 
@@ -58,7 +58,7 @@
                 v-model.trim="form.title"
                 type="text"
                 class="form-input"
-                placeholder="예: Cloud Native App기반 Web Service 개발"
+                placeholder="예: 어르신을 위한 서예 교실"
                 maxlength="100"
               />
             </div>
@@ -70,7 +70,7 @@
                 v-model.trim="form.description"
                 class="form-textarea"
                 rows="6"
-                placeholder="강의 소개, 학습 목표, 대상 등을 입력해 주세요."
+                placeholder="수업 내용, 준비물, 수업 요일과 시간 등을 입력해 주세요."
               ></textarea>
             </div>
 
@@ -98,7 +98,7 @@
                   min="0"
                   step="1000"
                   class="form-input"
-                  placeholder="예: 50000"
+                  placeholder="예: 10000"
                 />
               </div>
             </div>
@@ -138,6 +138,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import { courseApi } from '@/api/course.js'
 import { useAuthStore } from '@/store/auth.js'
+import { CATEGORY_OPTIONS } from '@/constants/categories.js'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -154,12 +155,7 @@ const validationError = ref('')
 const submitError = ref('')
 const submitSuccess = ref('')
 
-const categoryOptions = [
-  { label: '백엔드', value: 'BACKEND' },
-  { label: '프론트엔드', value: 'FRONTEND' },
-  { label: 'DevOps', value: 'DEVOPS' },
-  { label: 'AI / 데이터', value: 'DATA_SCIENCE' }
-]
+const categoryOptions = CATEGORY_OPTIONS
 
 function handleLogout() {
   auth.logout()

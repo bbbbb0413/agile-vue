@@ -2,8 +2,7 @@
   <router-link :to="`/courses/${course.id}`" class="course-card">
     <!-- 썸네일 -->
     <div class="card-thumb" :class="thumbBg">
-      <img v-if="thumbSrc" :src="thumbSrc" :alt="course.title" class="thumb-img" />
-      <div v-else class="thumb-placeholder">{{ course.category?.charAt(0) }}</div>
+      <span class="thumb-emoji" aria-hidden="true">{{ thumbEmoji }}</span>
     </div>
 
     <!-- 내용 -->
@@ -23,33 +22,16 @@
 
 <script setup>
 import { computed } from 'vue'
+import { getCategoryStyle } from '@/constants/categories.js'
 
 const props = defineProps({
   course: { type: Object, required: true }
 })
 
-const categoryConfig = {
-  '백엔드':    { bg: 'thumb-teal',   badge: 'badge-teal',   thumb: 'spring_boot' },
-  '프론트엔드':{ bg: 'thumb-teal',   badge: 'badge-teal',   thumb: 'vue_js' },
-  'DevOps':   { bg: 'thumb-blue',   badge: 'badge-blue',   thumb: 'docker' },
-  '데이터':   { bg: 'thumb-purple', badge: 'badge-purple', thumb: 'python' },
-  'AI':       { bg: 'thumb-pink',   badge: 'badge-pink',   thumb: 'generative_ai' },
-}
-
-const config = computed(() => categoryConfig[props.course.category] || { bg: 'thumb-gray', badge: 'badge-gray' })
+const config = computed(() => getCategoryStyle(props.course.category))
 const thumbBg = computed(() => config.value.bg)
 const badgeClass = computed(() => config.value.badge)
-
-// 썸네일 이미지 동적 import
-const thumbSrc = computed(() => {
-  const key = props.course.thumbnail || config.value.thumb
-  if (!key) return null
-  try {
-    return new URL(`../assets/images/courses/${key}.png`, import.meta.url).href
-  } catch {
-    return null
-  }
-})
+const thumbEmoji = computed(() => config.value.emoji)
 </script>
 
 <style scoped>
@@ -80,17 +62,11 @@ const thumbSrc = computed(() => {
 .thumb-amber  { background: #FAEEDA; }
 .thumb-purple { background: #EEEDFE; }
 .thumb-pink   { background: #FBEAF0; }
+.thumb-green  { background: #E4F4E2; }
 .thumb-gray   { background: #F1EFE8; }
-.thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 16px;
-}
-.thumb-placeholder {
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--color-text-muted);
+.thumb-emoji {
+  font-size: 44px;
+  line-height: 1;
 }
 .card-body {
   padding: 14px 16px;
