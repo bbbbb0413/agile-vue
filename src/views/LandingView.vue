@@ -60,7 +60,6 @@
               <h3 class="card-title">{{ course.title }}</h3>
               <div class="card-meta">
                 <span class="instructor">{{ course.instructor }}</span>
-                <span class="price">{{ course.price }}</span>
               </div>
               <button
                 type="button"

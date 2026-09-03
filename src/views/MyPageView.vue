@@ -128,10 +128,6 @@
                   <div class="meta-value">{{ course.category || '-' }}</div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">가격</div>
-                  <div class="meta-value">{{ formatPrice(course.price) }}</div>
-                </div>
-                <div class="meta-box">
                   <div class="meta-label">참여 회원 수</div>
                   <div class="meta-value">
                     {{ course.enrollment_count ?? course.enrollmentCount ?? 0 }}명
@@ -489,12 +485,12 @@ onMounted(async () => {
 }
 
 .page-layout {
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 32px 12px;
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 28px;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
 }
 
 .sidebar {
@@ -511,7 +507,7 @@ onMounted(async () => {
 }
 
 .sidebar-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -522,10 +518,10 @@ onMounted(async () => {
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
+  gap: 12px;
+  padding: 11px 14px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text-secondary);
   transition: var(--transition);
   background: none;
@@ -549,7 +545,7 @@ onMounted(async () => {
 }
 
 .si-icon {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .main-content {
@@ -776,7 +772,7 @@ onMounted(async () => {
 
 .course-meta-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 18px;
 }

@@ -11,7 +11,6 @@
       <h3 class="card-title">{{ course.title }}</h3>
       <div class="card-meta">
         <span class="instructor">{{ course.instructorName }}</span>
-        <span class="price">₩{{ Number(course.price).toLocaleString() }}</span>
       </div>
       <div class="card-footer">
         <span class="enrolled">수강생 {{ course.enrollmentCount?.toLocaleString() }}명</span>

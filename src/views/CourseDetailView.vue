@@ -26,8 +26,6 @@
             </div>
 
             <div class="enroll-body">
-              <div class="enroll-price">₩{{ displayPrice }}</div>
-
               <button
                 class="btn btn-primary btn-full"
                 @click="handlePrimaryAction"
