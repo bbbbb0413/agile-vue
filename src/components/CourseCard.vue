@@ -21,16 +21,30 @@
 
 <script setup>
 import { computed } from 'vue'
-import { getCategoryLabel, getCategoryStyle } from '@/constants/categories.js'
+import { getCategoryLabel } from '@/constants/categories.js'
 
 const props = defineProps({
   course: { type: Object, required: true }
 })
 
-const config = computed(() => getCategoryStyle(props.course.category))
-const thumbBg = computed(() => config.value.bg)
-const badgeClass = computed(() => config.value.badge)
-const thumbEmoji = computed(() => props.course.emoji || config.value.emoji)
+// 카테고리 값과 상관없이(대부분 '기타'로 들어있어 다 같은 색이 되는 걸 방지) 강좌 id 기준으로
+// 색/이모지를 돌려가며 입혀서 카드마다 시각적으로 다양하게 보여준다.
+const CARD_STYLES = [
+  { color: 'blue', emoji: '📘' },
+  { color: 'teal', emoji: '🌿' },
+  { color: 'pink', emoji: '🌸' },
+  { color: 'amber', emoji: '☀️' },
+  { color: 'purple', emoji: '🎨' },
+  { color: 'green', emoji: '🍀' },
+]
+
+const style = computed(() => {
+  const id = Number(props.course?.id) || 0
+  return CARD_STYLES[id % CARD_STYLES.length]
+})
+const thumbBg = computed(() => `thumb-${style.value.color}`)
+const badgeClass = computed(() => `badge-${style.value.color}`)
+const thumbEmoji = computed(() => props.course.emoji || style.value.emoji)
 </script>
 
 <style scoped>

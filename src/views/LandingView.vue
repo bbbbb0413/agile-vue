@@ -129,7 +129,6 @@
 <script setup>
 import { computed, onMounted, reactive } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
-import { getCategoryStyle } from '@/constants/categories.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { useAuthStore } from '@/store/auth.js'
 import { useCourseStore } from '@/store/course.js'
@@ -186,19 +185,32 @@ async function toggleFavorite(courseId) {
   }
 }
 
+// 카테고리 값과 상관없이(현재 데이터가 대부분 '기타'로 들어있어 다 같은 색이 되는 걸 방지) 카드마다 순서대로 다른 색/이모지를 입혀서 시각적으로 다양하게 보여준다.
+const CARD_STYLES = [
+  { color: 'blue', emoji: '📘' },
+  { color: 'teal', emoji: '🌿' },
+  { color: 'pink', emoji: '🌸' },
+  { color: 'amber', emoji: '☀️' },
+  { color: 'purple', emoji: '🎨' },
+  { color: 'green', emoji: '🍀' },
+]
+
 // 실제 강좌 중 수강생이 많은 순으로 6개를 뽑아 인기 강좌로 보여준다.
 const featuredCourses = computed(() =>
   [...courseStore.courses]
     .sort((a, b) => (b.enrollmentCount || 0) - (a.enrollmentCount || 0))
     .slice(0, 6)
-    .map((course, index) => ({
-      ...course,
-      instructor: course.instructorName,
-      icon: course.emoji || getCategoryStyle(course.category).emoji,
-      thumbBg: getCategoryStyle(course.category).bg,
-      badgeClass: getCategoryStyle(course.category).badge,
-      popular: index === 0,
-    }))
+    .map((course, index) => {
+      const style = CARD_STYLES[index % CARD_STYLES.length]
+      return {
+        ...course,
+        instructor: course.instructorName,
+        icon: course.emoji || style.emoji,
+        thumbBg: `thumb-${style.color}`,
+        badgeClass: `badge-${style.color}`,
+        popular: index === 0,
+      }
+    })
 )
 
 const features = [
