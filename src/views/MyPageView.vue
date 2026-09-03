@@ -85,7 +85,7 @@
           <div class="summary-cards">
             <div class="summary-card">
               <div class="summary-label">담당 프로그램 수</div>
-              <div class="summary-value">{{ displayedCourses.length }}</div>
+              <div class="summary-value">{{ myCourses.length }}</div>
             </div>
             <div class="summary-card">
               <div class="summary-label">총 참여 회원 수</div>
@@ -103,9 +103,9 @@
             </div>
           </div>
 
-          <div v-else-if="displayedCourses.length" class="instructor-course-list fade-in">
+          <div v-else-if="myCourses.length" class="instructor-course-list fade-in">
             <article
-              v-for="course in displayedCourses"
+              v-for="course in myCourses"
               :key="course.id"
               class="instructor-course-card"
             >
@@ -167,6 +167,8 @@
     <CourseMembersModal
       v-if="selectedCourse"
       :course="selectedCourse"
+      :loading="membersLoading"
+      :error-message="membersError"
       @close="closeMembersModal"
       @select-member="openSeniorModal"
       @show-report="openReportModal"
@@ -175,6 +177,8 @@
     <SeniorDetailModal
       v-if="selectedSenior"
       :senior="selectedSenior"
+      :loading="seniorLoading"
+      :error-message="seniorError"
       @close="closeSeniorModal"
     />
 
@@ -188,7 +192,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import CourseCard from '@/components/CourseCard.vue'
 import CourseMembersModal from '@/components/CourseMembersModal.vue'
@@ -196,10 +200,8 @@ import SeniorDetailModal from '@/components/SeniorDetailModal.vue'
 import CareReportModal from '@/components/CareReportModal.vue'
 import { useAuthStore } from '@/store/auth.js'
 import { enrollmentApi } from '@/api/enrollment.js'
-import { courseApi } from '@/api/course.js'
 
 const router = useRouter()
-const route = useRoute()
 const auth = useAuthStore()
 
 const isInstructor = computed(() => auth.user?.role === 'INSTRUCTOR')
@@ -217,79 +219,13 @@ const instructorError = ref('')
 const selectedCourse = ref(null)
 const selectedSenior = ref(null)
 const reportCourse = ref(null)
-
-const mockReportCourse = Object.freeze({
-  id: 999999,
-  title: '[테스트] 요가·스트레칭',
-  description: '어르신 대상 저강도 프로그램 UI 테스트 데이터입니다.',
-  category: 'OTHER',
-  price: 0,
-  enrollmentCount: 3,
-  status: 'ACTIVE',
-  members: [
-    {
-      id: 101,
-      name: '김봄',
-      email: 'spring101@example.com',
-      enrollmentStatus: 'ACTIVE',
-      note: '무릎이 조금 불편하고 고혈압이 있어 오래 서 있는 동작은 피하고 싶습니다.'
-    },
-    {
-      id: 102,
-      name: '이새롬',
-      email: 'saerom102@example.com',
-      enrollmentStatus: 'ACTIVE',
-      note: '몸 상태가 양호하고 오늘은 활기찬 기분이며, 가벼운 근력 운동 참여를 희망합니다.'
-    },
-    {
-      id: 103,
-      name: '박다정',
-      email: 'dajeong103@example.com',
-      enrollmentStatus: 'PENDING',
-      note: '조금 피곤하고 허리 통증과 관절염이 있어 낮은 강도의 활동을 희망합니다.'
-    }
-  ],
-  healthReport: {
-    courseId: 999999,
-    courseTitle: '[테스트] 요가·스트레칭',
-    generatedAt: '2026-09-02T09:06:28.365122Z',
-    totalEnrolledStudents: 3,
-    studentsWithNotes: 3,
-    studentSummaries: [
-      {
-        userId: 101,
-        riskLevel: 'MEDIUM',
-        summary: '무릎이 조금 불편하고 고혈압이 있어 오래 서 있는 동작은 피하는 것이 좋습니다.'
-      },
-      {
-        userId: 102,
-        riskLevel: 'LOW',
-        summary: '몸 상태가 양호하고 가벼운 근력 운동 참여를 희망합니다.'
-      },
-      {
-        userId: 103,
-        riskLevel: 'HIGH',
-        summary: '허리 통증과 관절염이 있어 낮은 강도의 활동으로 조정이 필요합니다.'
-      }
-    ],
-    overallOpinion: '허리와 무릎에 불편함이 있는 참여자가 있으므로 서 있는 동작과 허리에 부담이 되는 자세는 줄이고, 의자를 활용한 저강도 스트레칭 중심으로 진행하는 것이 좋습니다.',
-    disclaimer: '본 리포트는 참여자가 직접 작성한 메모를 AI가 요약한 참고 자료이며, 의학적 진단이나 처방이 아닙니다. 실제 조치가 필요한 경우 반드시 참여자 본인 및 필요 시 보건 전문가와 직접 확인하시기 바랍니다.',
-    model: 'gpt-4o-mini'
-  }
-})
-
-const showMockReportCourse = computed(() =>
-  import.meta.env.DEV && route.query.mockCareReport === '1'
-)
-
-const displayedCourses = computed(() =>
-  showMockReportCourse.value
-    ? [...myCourses.value, mockReportCourse]
-    : myCourses.value
-)
+const membersLoading = ref(false)
+const membersError = ref('')
+const seniorLoading = ref(false)
+const seniorError = ref('')
 
 const totalEnrollmentCount = computed(() =>
-  displayedCourses.value.reduce((sum, course) => {
+  myCourses.value.reduce((sum, course) => {
     const count = Number(course.enrollment_count ?? course.enrollmentCount ?? 0)
     return sum + (Number.isNaN(count) ? 0 : count)
   }, 0)
@@ -300,22 +236,84 @@ function handleLogout() {
   router.push('/')
 }
 
-function openMembersModal(course) {
-  selectedCourse.value = course
+async function openMembersModal(course) {
+  selectedCourse.value = { ...course, members: [] }
+  selectedSenior.value = null
+  membersLoading.value = true
+  membersError.value = ''
+
+  try {
+    const response = await enrollmentApi.getCourseStudents(course.id)
+    const payload = response.data?.data ?? response.data
+
+    if (!Array.isArray(payload)) {
+      throw new Error('참여 어르신 응답 형식이 올바르지 않습니다.')
+    }
+
+    if (selectedCourse.value?.id !== course.id) return
+
+    selectedCourse.value = {
+      ...course,
+      members: payload.map(member => ({
+        ...member,
+        id: member.userId ?? member.id,
+        enrollmentStatus: member.status ?? member.enrollmentStatus
+      }))
+    }
+  } catch (error) {
+    console.error('[MyPage] failed to load course students:', error)
+    membersError.value =
+      error.response?.data?.message ||
+      error.message ||
+      '참여 어르신을 불러오지 못했습니다.'
+  } finally {
+    membersLoading.value = false
+  }
 }
 
 function closeMembersModal() {
   selectedCourse.value = null
   selectedSenior.value = null
   reportCourse.value = null
+  membersError.value = ''
+  seniorError.value = ''
 }
 
-function openSeniorModal(senior) {
+async function openSeniorModal(senior) {
+  const courseId = selectedCourse.value?.id
+  const studentId = senior.userId ?? senior.id
+
   selectedSenior.value = senior
+  seniorLoading.value = true
+  seniorError.value = ''
+
+  try {
+    const response = await enrollmentApi.getStudentDetail(courseId, studentId)
+    const payload = response.data?.data ?? response.data
+
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('어르신 상세 응답 형식이 올바르지 않습니다.')
+    }
+
+    selectedSenior.value = {
+      ...senior,
+      ...payload,
+      id: payload.userId ?? senior.id
+    }
+  } catch (error) {
+    console.error('[MyPage] failed to load student detail:', error)
+    seniorError.value =
+      error.response?.data?.message ||
+      error.message ||
+      '어르신 추가정보를 불러오지 못했습니다.'
+  } finally {
+    seniorLoading.value = false
+  }
 }
 
 function closeSeniorModal() {
   selectedSenior.value = null
+  seniorError.value = ''
 }
 
 function openReportModal() {
@@ -330,20 +328,6 @@ function formatPrice(price) {
   const value = Number(price ?? 0)
   if (Number.isNaN(value)) return '-'
   return `${value.toLocaleString()}원`
-}
-
-/**
- * course 객체에서 강사 식별자 추출
- */
-function getCourseInstructorId(course) {
-  return (
-    course.instructorId ??
-    course.instructor_id ??
-    course.instructor ??
-    course.teacherId ??
-    course.teacher_id ??
-    null
-  )
 }
 
 async function loadStudentRecommendations() {
@@ -395,49 +379,14 @@ async function loadInstructorCourses() {
       return
     }
 
-    if (!auth.user.id) {
-      console.warn('[MyPage] instructor auth.user.id is missing:', auth.user)
-      instructorError.value = '강좌 정보를 불러오지 못했습니다.'
-      return
+    const response = await enrollmentApi.getInstructorCourses()
+    const payload = response.data?.data ?? response.data
+
+    if (!Array.isArray(payload)) {
+      throw new Error('담당 프로그램 응답 형식이 올바르지 않습니다.')
     }
 
-    const res = await courseApi.getCourses()
-    console.log('[MyPage] course list response:', res.data)
-
-    let courses = []
-
-    if (Array.isArray(res.data?.data)) {
-      courses = res.data.data
-    } else if (Array.isArray(res.data)) {
-      courses = res.data
-    } else {
-      console.warn('[MyPage] unexpected course response shape:', res.data)
-    }
-
-    console.log('[MyPage] auth.user =', auth.user)
-    console.log('[MyPage] courses =', courses)
-    console.log('[MyPage] first course =', courses[0])
-
-    courses.forEach(course => {
-      console.log('[MyPage] instructor fields check:', {
-        courseId: course.id,
-        instructorId: course.instructorId,
-        instructor_id: course.instructor_id,
-        instructor: course.instructor,
-        teacherId: course.teacherId,
-        teacher_id: course.teacher_id,
-        rawCourse: course
-      })
-    })
-
-    const instructorId = Number(auth.user.id)
-
-    myCourses.value = courses.filter(course => {
-      const courseInstructorId = Number(getCourseInstructorId(course))
-      return !Number.isNaN(courseInstructorId) && courseInstructorId === instructorId
-    })
-
-    console.log('[MyPage] filtered myCourses =', myCourses.value)
+    myCourses.value = payload
   } catch (error) {
     console.error('[MyPage] failed to load instructor courses:', error)
     instructorError.value = '현재 강좌 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'

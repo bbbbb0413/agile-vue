@@ -15,7 +15,15 @@
           </button>
         </header>
 
-        <div v-if="healthNote" class="health-note">
+        <div v-if="loading" class="api-state">
+          <div class="loading-spinner"></div>
+          <p>어르신 추가정보를 불러오는 중입니다.</p>
+        </div>
+        <div v-else-if="errorMessage" class="api-state api-error">
+          <div class="empty-icon">⚠️</div>
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div v-else-if="healthNote" class="health-note">
           <h3>건강 체크 요약</h3>
           <p>{{ healthNote }}</p>
         </div>
@@ -32,7 +40,11 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
-const props = defineProps({ senior: { type: Object, required: true } })
+const props = defineProps({
+  senior: { type: Object, required: true },
+  loading: { type: Boolean, default: false },
+  errorMessage: { type: String, default: '' }
+})
 const emit = defineEmits(['close'])
 const closeButton = ref(null)
 
@@ -71,6 +83,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown, tru
 .health-note h3 { margin-bottom: 10px; color: var(--color-text-muted); font-size: 13px; font-weight: 600; }
 .health-note p { color: var(--color-text-primary); font-size: 15px; line-height: 1.8; white-space: pre-line; overflow-wrap: anywhere; }
 .empty-state { padding: 48px 26px; color: var(--color-text-muted); text-align: center; }
+.api-state { display: grid; place-items: center; gap: 12px; min-height: 220px; padding: 40px 26px; color: var(--color-text-secondary); text-align: center; }
+.api-error { color: var(--color-danger, #c2413b); }
+.loading-spinner { width: 34px; height: 34px; border: 3px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin .8s linear infinite; }
 .modal-footer { display: flex; justify-content: flex-end; padding: 18px 26px; border-top: 1px solid var(--color-border); }
+@keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) { .modal-overlay { padding: 12px; } }
 </style>

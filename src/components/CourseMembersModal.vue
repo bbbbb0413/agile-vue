@@ -28,46 +28,59 @@
           </button>
         </header>
 
-        <div class="member-count">총 {{ members.length }}명</div>
+        <div v-if="loading" class="api-state">
+          <div class="loading-spinner"></div>
+          <p>참여 어르신을 불러오는 중입니다.</p>
+        </div>
 
-        <div v-if="members.length" class="member-grid">
-          <article
-            v-for="member in members"
-            :key="member.id"
-            class="member-card"
-          >
-            <div class="member-avatar">{{ member.name?.charAt(0) || '?' }}</div>
-            <div class="member-info">
-              <div class="member-heading">
-                <h3>{{ member.name || '이름 없음' }}</h3>
-                <span class="status-badge" :class="statusClass(member.enrollmentStatus)">
-                  {{ member.enrollmentStatus || 'UNKNOWN' }}
-                </span>
+        <div v-else-if="errorMessage" class="api-state api-error">
+          <div class="empty-icon">⚠️</div>
+          <p>{{ errorMessage }}</p>
+        </div>
+
+        <template v-else>
+          <div class="member-count">총 {{ members.length }}명</div>
+
+          <div v-if="members.length" class="member-grid">
+            <article
+              v-for="member in members"
+              :key="member.id"
+              class="member-card"
+            >
+              <div class="member-avatar">{{ member.name?.charAt(0) || '?' }}</div>
+              <div class="member-info">
+                <div class="member-heading">
+                  <h3>{{ member.name || '이름 없음' }}</h3>
+                  <span class="status-badge" :class="statusClass(member.enrollmentStatus)">
+                    {{ member.enrollmentStatus || 'UNKNOWN' }}
+                  </span>
+                </div>
+                <dl class="basic-info">
+                  <div><dt>나이</dt><dd>{{ formatAge(member.age) }}</dd></div>
+                  <div><dt>이메일</dt><dd>{{ member.email || '-' }}</dd></div>
+                </dl>
+                <button
+                  type="button"
+                  class="detail-label"
+                  @click="selectMember(member)"
+                >추가정보 보기 →</button>
               </div>
-              <dl class="basic-info">
-                <div><dt>회원 ID</dt><dd>#{{ member.id }}</dd></div>
-                <div><dt>이메일</dt><dd>{{ member.email || '-' }}</dd></div>
-              </dl>
-              <button
-                type="button"
-                class="detail-label"
-                @click="selectMember(member)"
-              >추가정보 보기 →</button>
-            </div>
-          </article>
-        </div>
+            </article>
+          </div>
 
-        <div v-else class="empty-state">
-          <div class="empty-icon">👥</div>
-          <h3>참여 어르신이 없습니다.</h3>
-          <p>수강생 조회 API가 연결되면 이 영역에 회원 목록이 표시됩니다.</p>
-        </div>
+          <div v-else class="empty-state">
+            <div class="empty-icon">👥</div>
+            <h3>참여 어르신이 없습니다.</h3>
+            <p>아직 이 프로그램에 참여한 어르신이 없습니다.</p>
+          </div>
+        </template>
 
         <footer class="modal-footer">
           <button type="button" class="btn btn-ghost" @click="close">닫기</button>
           <button
             type="button"
             class="btn btn-primary"
+            :disabled="loading"
             @click="showReport"
           >종합 리포트 보기</button>
         </footer>
@@ -80,7 +93,9 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = defineProps({
-  course: { type: Object, required: true }
+  course: { type: Object, required: true },
+  loading: { type: Boolean, default: false },
+  errorMessage: { type: String, default: '' }
 })
 
 const emit = defineEmits(['close', 'select-member', 'show-report'])
@@ -89,6 +104,10 @@ const members = computed(() => Array.isArray(props.course.members) ? props.cours
 
 function statusClass(status) {
   return status === 'ACTIVE' ? 'status-active' : 'status-pending'
+}
+
+function formatAge(age) {
+  return age == null || age === '' ? '-' : `${age}세`
 }
 
 function close() {
@@ -147,7 +166,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 .empty-icon { margin-bottom: 12px; font-size: 40px; }
 .empty-state h3 { margin-bottom: 8px; font-size: 18px; }
 .empty-state p { color: var(--color-text-secondary); font-size: 14px; }
+.api-state { display: grid; place-items: center; gap: 12px; min-height: 220px; padding: 40px 28px; color: var(--color-text-secondary); text-align: center; }
+.api-error { color: var(--color-danger, #c2413b); }
+.loading-spinner { width: 34px; height: 34px; border: 3px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin .8s linear infinite; }
 .modal-footer { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 18px 28px; border-top: 1px solid var(--color-border); background: var(--color-bg-primary); }
 .modal-footer .btn:disabled { cursor: not-allowed; opacity: .5; }
+@keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 680px) { .modal-overlay { padding: 12px; } .member-grid { grid-template-columns: 1fr; padding-left: 20px; padding-right: 20px; } .modal-header, .modal-footer { padding-left: 20px; padding-right: 20px; } }
 </style>
