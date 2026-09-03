@@ -127,13 +127,15 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import { getCategoryStyle } from '@/constants/categories.js'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { useAuthStore } from '@/store/auth.js'
+import { useCourseStore } from '@/store/course.js'
 
 const auth = useAuthStore()
+const courseStore = useCourseStore()
 
 // 담은 강좌 id 목록 (UI 전용 - 백엔드 연동 전 임시 상태)
 const addedIds = reactive(new Set())
@@ -184,19 +186,20 @@ async function toggleFavorite(courseId) {
   }
 }
 
-// 랜딩용 예시 강좌 (UI 전용 - 백엔드 연동 전 임시 데이터)
-const featuredCourses = [
-  { id:1, title:'서예 교실',       category:'예술',   instructor:'이서예 강사',   icon:'🖌️', popular:true },
-  { id:2, title:'태권도 교실',     category:'건강',   instructor:'박태권 강사',   icon:'🥋' },
-  { id:3, title:'노래교실',        category:'음악',   instructor:'최고운 강사',   icon:'🎤' },
-  { id:4, title:'요가 · 스트레칭', category:'건강',   instructor:'정유연 강사',   icon:'🧘' },
-  { id:5, title:'스마트폰 활용법', category:'디지털', instructor:'김디지털 강사', icon:'📱' },
-  { id:6, title:'텃밭 가꾸기',     category:'여가',   instructor:'한농부 강사',   icon:'🌱' },
-].map(course => ({
-  ...course,
-  thumbBg: getCategoryStyle(course.category).bg,
-  badgeClass: getCategoryStyle(course.category).badge,
-}))
+// 실제 강좌 중 수강생이 많은 순으로 6개를 뽑아 인기 강좌로 보여준다.
+const featuredCourses = computed(() =>
+  [...courseStore.courses]
+    .sort((a, b) => (b.enrollmentCount || 0) - (a.enrollmentCount || 0))
+    .slice(0, 6)
+    .map((course, index) => ({
+      ...course,
+      instructor: course.instructorName,
+      icon: course.emoji || getCategoryStyle(course.category).emoji,
+      thumbBg: getCategoryStyle(course.category).bg,
+      badgeClass: getCategoryStyle(course.category).badge,
+      popular: index === 0,
+    }))
+)
 
 const features = [
   { icon:'🖐️', title:'쉽고 간편한 신청', desc:'복잡한 절차 없이 몇 번의 클릭으로 신청이 끝나요.', badgeClass:'thumb-teal' },
@@ -205,7 +208,12 @@ const features = [
   { icon:'👨‍👩‍👧', title:'가족과 함께 확인', desc:'신청 내역을 자녀에게도 알려드릴 수 있어요.', badgeClass:'thumb-pink' },
 ]
 
-onMounted(loadFavorites)
+onMounted(() => {
+  loadFavorites()
+  if (!courseStore.courses.length) {
+    courseStore.fetchCourses()
+  }
+})
 </script>
 
 <style scoped>
