@@ -24,7 +24,7 @@ const MOCK_COURSES = [
   { id: 90011, category: '디지털', title: '스마트폰 활용법', instructorName: '김디지털 강사', enrollmentCount: 312 },
   { id: 90012, category: '디지털', title: '키오스크 주문 실습', instructorName: '오터치 강사', enrollmentCount: 99 },
   { id: 90013, category: '기타', title: '웃음치료 교실', instructorName: '배웃음 강사', enrollmentCount: 88 },
-  { id: 90014, category: '기타', title: '시니어 모델 워킹', instructorName: '강워킹 강사', enrollmentCount: 41 },
+  { id: 90014, category: '기타', title: '시니어 모델 워킹', instructorName: '강워킹 강사', enrollmentCount: 41, emoji: '👄' },
 ]
 
 export const useCourseStore = defineStore('course', () => {
