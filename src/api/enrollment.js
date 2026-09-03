@@ -13,6 +13,15 @@ export const enrollmentApi = {
   updateNote(enrollmentId, note) {
     return api.post(`/api/enrollments/${enrollmentId}/note`, { note })
   },
+  getFavorites() {
+    return api.get('/api/enrollments/favorites')
+  },
+  addFavorite(courseId) {
+    return api.post(`/api/enrollments/favorites/${courseId}`)
+  },
+  deleteFavorite(courseId) {
+    return api.delete(`/api/enrollments/favorites/${courseId}`)
+  },
   getRecommendations(userId) {
     return api.get(`/api/recommend/${userId}`)
   },

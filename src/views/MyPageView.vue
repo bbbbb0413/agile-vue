@@ -46,6 +46,34 @@
 
         <!-- 학생 화면 -->
         <section v-if="!isInstructor" class="recommend-section">
+          <section class="favorite-section">
+            <div class="section-head">
+              <h3 class="section-title">찜한 강의</h3>
+              <span class="section-subtitle">관심 있는 강의를 모아두었습니다.</span>
+            </div>
+
+            <div v-if="favoriteLoading" class="loading-row">
+              <div v-for="i in 3" :key="i" class="skeleton-card">
+                <div class="skeleton-thumb"></div>
+                <div class="skeleton-body">
+                  <div class="skeleton-line short"></div>
+                  <div class="skeleton-line"></div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else-if="favorites.length" class="recommend-grid fade-in">
+              <CourseCard
+                v-for="favorite in favorites"
+                :key="favorite.id"
+                :course="favorite.course || favorite"
+              />
+            </div>
+
+            <p v-else-if="favoriteError" class="empty-text">{{ favoriteError }}</p>
+            <p v-else class="empty-text">아직 찜한 강의가 없습니다.</p>
+          </section>
+
           <h3 class="section-title">추천 강의</h3>
 
           <p v-if="recommendMessage" class="recommend-message">
@@ -208,6 +236,9 @@ const recommendations = ref([])
 const recommendLoading = ref(true)
 const recommendError = ref('')
 const recommendMessage = ref('')
+const favorites = ref([])
+const favoriteLoading = ref(true)
+const favoriteError = ref('')
 
 /* 강사용 */
 const myCourses = ref([])
@@ -408,6 +439,24 @@ async function loadStudentRecommendations() {
   }
 }
 
+async function loadFavorites() {
+  try {
+    const res = await enrollmentApi.getFavorites()
+    const payload = res.data
+
+    favorites.value = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+        ? payload
+        : []
+  } catch (error) {
+    console.error('[MyPage] failed to load favorites:', error)
+    favoriteError.value = '찜한 강의를 불러오지 못했습니다.'
+  } finally {
+    favoriteLoading.value = false
+  }
+}
+
 async function loadInstructorCourses() {
   try {
     if (!auth.user) {
@@ -473,7 +522,7 @@ onMounted(async () => {
     await loadInstructorCourses()
   } else {
     instructorLoading.value = false
-    await loadStudentRecommendations()
+    await Promise.all([loadStudentRecommendations(), loadFavorites()])
   }
 })
 </script>
