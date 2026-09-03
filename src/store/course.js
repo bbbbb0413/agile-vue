@@ -11,20 +11,20 @@ import {
 // 백엔드 강의 API 연동 전, 카테고리별로 화면을 미리 채워보기 위한 임시 목업 데이터.
 // 실제 API가 강의를 반환하기 시작하면 이 데이터는 자동으로 사용되지 않는다.
 const MOCK_COURSES = [
-  { id: 90001, category: '건강', title: '요가 · 스트레칭', instructorName: '정유연 선생님', price: 12000, enrollmentCount: 128 },
-  { id: 90002, category: '건강', title: '건강 체조 교실', instructorName: '김근력 선생님', price: 10000, enrollmentCount: 94 },
-  { id: 90003, category: '예술', title: '서예 교실', instructorName: '이서예 선생님', price: 10000, enrollmentCount: 215 },
-  { id: 90004, category: '예술', title: '수채화 그리기', instructorName: '박수채 선생님', price: 13000, enrollmentCount: 67 },
-  { id: 90005, category: '음악', title: '노래교실', instructorName: '최고운 선생님', price: 8000, enrollmentCount: 152 },
-  { id: 90006, category: '음악', title: '오카리나 배우기', instructorName: '한소리 선생님', price: 9000, enrollmentCount: 58 },
-  { id: 90007, category: '여가', title: '텃밭 가꾸기', instructorName: '한농부 선생님', price: 5000, enrollmentCount: 203 },
-  { id: 90008, category: '여가', title: '사진 산책 동호회', instructorName: '윤찰칵 선생님', price: 7000, enrollmentCount: 45 },
-  { id: 90009, category: '생활', title: '집밥 요리교실', instructorName: '조맛나 선생님', price: 11000, enrollmentCount: 176 },
-  { id: 90010, category: '생활', title: '반려식물 돌보기', instructorName: '임초록 선생님', price: 6000, enrollmentCount: 61 },
-  { id: 90011, category: '디지털', title: '스마트폰 활용법', instructorName: '김디지털 선생님', price: 0, enrollmentCount: 312 },
-  { id: 90012, category: '디지털', title: '키오스크 주문 실습', instructorName: '오터치 선생님', price: 3000, enrollmentCount: 99 },
-  { id: 90013, category: '기타', title: '웃음치료 교실', instructorName: '배웃음 선생님', price: 7000, enrollmentCount: 88 },
-  { id: 90014, category: '기타', title: '시니어 모델 워킹', instructorName: '강워킹 선생님', price: 9000, enrollmentCount: 41 },
+  { id: 90001, category: '건강', title: '요가 · 스트레칭', instructorName: '정유연 강사', enrollmentCount: 128 },
+  { id: 90002, category: '건강', title: '건강 체조 교실', instructorName: '김근력 강사', enrollmentCount: 94 },
+  { id: 90003, category: '예술', title: '서예 교실', instructorName: '이서예 강사', enrollmentCount: 215 },
+  { id: 90004, category: '예술', title: '수채화 그리기', instructorName: '박수채 강사', enrollmentCount: 67 },
+  { id: 90005, category: '음악', title: '노래교실', instructorName: '최고운 강사', enrollmentCount: 152 },
+  { id: 90006, category: '음악', title: '오카리나 배우기', instructorName: '한소리 강사', enrollmentCount: 58 },
+  { id: 90007, category: '여가', title: '텃밭 가꾸기', instructorName: '한농부 강사', enrollmentCount: 203 },
+  { id: 90008, category: '여가', title: '사진 산책 동호회', instructorName: '윤찰칵 강사', enrollmentCount: 45 },
+  { id: 90009, category: '생활', title: '집밥 요리교실', instructorName: '조맛나 강사', enrollmentCount: 176 },
+  { id: 90010, category: '생활', title: '반려식물 돌보기', instructorName: '임초록 강사', enrollmentCount: 61 },
+  { id: 90011, category: '디지털', title: '스마트폰 활용법', instructorName: '김디지털 강사', enrollmentCount: 312 },
+  { id: 90012, category: '디지털', title: '키오스크 주문 실습', instructorName: '오터치 강사', enrollmentCount: 99 },
+  { id: 90013, category: '기타', title: '웃음치료 교실', instructorName: '배웃음 강사', enrollmentCount: 88 },
+  { id: 90014, category: '기타', title: '시니어 모델 워킹', instructorName: '강워킹 강사', enrollmentCount: 41 },
 ]
 
 export const useCourseStore = defineStore('course', () => {

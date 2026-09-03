@@ -23,15 +23,6 @@
           </router-link>
         </div>
 
-        <div class="sidebar-section">
-          <div class="sidebar-label">계정</div>
-          <router-link to="/mypage" class="sidebar-item">
-            <span class="si-icon">👤</span> 마이페이지
-          </router-link>
-          <button class="sidebar-item sidebar-btn" @click="handleLogout">
-            <span class="si-icon">🚪</span> 로그아웃
-          </button>
-        </div>
       </aside>
 
       <main class="main-content">
@@ -49,7 +40,7 @@
 
             <div class="enroll-info">
               <span class="badge" :class="getBadge(item.course?.category)">
-                {{ item.course?.category }}
+                {{ getCategoryLabel(item.course?.category) }}
               </span>
               <h3 class="enroll-title">{{ item.course?.title }}</h3>
               <p class="enroll-instructor">강사: {{ item.course?.instructorName }}</p>
@@ -89,7 +80,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import { enrollmentApi } from '@/api/enrollment.js'
 import { useAuthStore } from '@/store/auth.js'
-import { getCategoryStyle } from '@/constants/categories.js'
+import { getCategoryLabel, getCategoryStyle } from '@/constants/categories.js'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -109,11 +100,6 @@ function getBadge(cat) {
 
 function getThumbEmoji(cat) {
   return getCategoryStyle(cat).emoji
-}
-
-function handleLogout() {
-  auth.logout()
-  router.push('/')
 }
 
 onMounted(async () => {

@@ -9,9 +9,9 @@
       >
         <header class="modal-header">
           <div>
-            <span class="modal-badge">프로그램 참여 어르신</span>
+            <span class="modal-badge">강의 참여 어르신</span>
             <h2 id="course-members-title" class="modal-title">
-              {{ course.title || '프로그램' }}
+              {{ course.title || '강의' }}
             </h2>
             <p class="modal-subtitle">어르신 카드를 선택하면 등록한 추가정보를 확인할 수 있습니다.</p>
           </div>
@@ -84,7 +84,7 @@
         <div v-else class="empty-state">
           <div class="empty-icon">👥</div>
           <h3>참여 어르신이 없습니다.</h3>
-          <p>아직 이 프로그램을 신청한 어르신이 없습니다.</p>
+          <p>아직 이 강의를 신청한 어르신이 없습니다.</p>
         </div>
 
         <footer class="modal-footer">

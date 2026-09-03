@@ -48,7 +48,9 @@ export function getCategoryStyle(category) {
 
 export function getCategoryLabel(category) {
   if (!category) return ''
-  return CATEGORY_LABEL_MAP[category] || category
+  if (CATEGORY_LABEL_MAP[category]) return CATEGORY_LABEL_MAP[category]
+  if (CATEGORY_STYLE_MAP[category]) return category
+  return CATEGORY_LABEL_MAP.OTHER
 }
 
 export function getCategoryEmoji(category) {
